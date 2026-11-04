@@ -124,7 +124,13 @@ function soundEffect(kind){
 }
 
 function schedule(kind,delay=0,offset=0){queue.push({kind,due:clock+delay,offset});stage.classList.add('active')}
-function syncStage(){stage.classList.toggle('active',Boolean(effects.length||particles.length||flashes.length||queue.length||P.length||RK.length||(sound&&clock<audioUntil)))}
+let isIntroRunning = false;
+function syncStage(){
+  const isBusy = Boolean(effects.length||particles.length||flashes.length||queue.length||P.length||RK.length||isIntroRunning||(sound&&clock<audioUntil));
+  stage.classList.toggle('active', isBusy);
+  const appEl = document.querySelector('.app');
+  if(appEl) appEl.classList.toggle('cinema-mode', isBusy);
+}
 
 function sprite(color){
   if(sprites.has(color))return sprites.get(color);
@@ -304,16 +310,28 @@ function petalFrame(dt){
 
 /* show sequence from sample */
 function show(){
+  isIntroRunning = true;
+  syncStage();
   const my=++run,g=$('#greet'),tor=$('#toran'),bar=$('#bar');
   P=[];RK=[];T=null;if(g)g.classList.remove('on');setGreet();
-  if(matchMedia('(prefers-reduced-motion:reduce)').matches){if(g)g.classList.add('on');return}
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){
+    isIntroRunning = false;
+    if(g)g.classList.add('on');
+    syncStage();
+    return;
+  }
   if(tor){tor.classList.remove('in');void tor.offsetWidth;tor.classList.add('in')}
   if(bar)bar.classList.add('dim');
   const at=(ms,fn)=>setTimeout(()=>{if(my===run)fn()},ms);
   petals();
   [[.2,0,330],[.5,250,45],[.8,500,190]].forEach(([k,ms,h])=>at(ms,()=>sampleRocket(W*k,H*R(.15,.35),h)));
   at(1400,()=>sampleRocket(W/2,H*.4,0,(x,y)=>{sampleBurst(x,y,45);textBurst(x,y)}));
-  at(7000,()=>{if(g)g.classList.add('on');if(bar)bar.classList.remove('dim')});
+  at(7000,()=>{
+    isIntroRunning = false;
+    if(g)g.classList.add('on');
+    if(bar)bar.classList.remove('dim');
+    syncStage();
+  });
 }
 
 // Master Animation Loop combining Standard Fireworks + Sample Intro
@@ -447,9 +465,10 @@ function navigate(){
     if(g)g.classList.add('on');
   } else {
     queue=[];effects=[];particles=[];flashes=[];audioUntil=0;
-    P=[];RK=[];T=null;pOn=false;
+    P=[];RK=[];T=null;pOn=false;isIntroRunning=false;
     if(pc)pc.clearRect(0,0,W,H);
     stage.classList.remove('active');
+    syncStage();
     if(master)master.gain.setTargetAtTime(0,audio.currentTime,.025);
     const tor=$('#toran'),bar=$('#bar');
     if(tor)tor.classList.add('intro-hidden');
@@ -466,6 +485,16 @@ document.addEventListener('visibilitychange',()=>{
     stage.classList.remove('active');
     if(audio?.state==='running')audio.suspend();
   }else if(audio&&sound)audio.resume().catch(()=>{});
+});
+
+stage.addEventListener('click',(e)=>{
+  if(e.target===stage||e.target===canvas||(e.target&&e.target.id==='pt')){
+    const appEl=document.querySelector('.app');
+    if(appEl&&appEl.classList.contains('cinema-mode')){
+      isIntroRunning=false;
+      appEl.classList.remove('cinema-mode');
+    }
+  }
 });
 
 /* font check & initial sequence start */

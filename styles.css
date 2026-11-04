@@ -356,23 +356,120 @@ body, button, input, select, textarea {
   display: none !important;
 }
 
+/* UI Transitions for Smooth Clearing & Restoring */
+.top, .sidebar, .share-bar, #greet, .festive-hands {
+  transition: transform 0.42s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.35s ease;
+}
+
+/* Cinema Mode (Clears entire screen during fireworks, preview & opening show) */
+.app.cinema-mode .top {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+.app.cinema-mode .sidebar {
+  transform: translateY(120%);
+  opacity: 0;
+  pointer-events: none;
+}
+.app.cinema-mode .share-bar {
+  transform: translateX(-50%) translateY(150%);
+  opacity: 0;
+  pointer-events: none;
+}
+.app.cinema-mode #greet {
+  opacity: 0;
+  pointer-events: none;
+}
+.app.cinema-mode .festive-hands {
+  opacity: 0;
+  pointer-events: none;
+}
+.app.cinema-mode .greeting {
+  opacity: 0;
+  pointer-events: none;
+}
+@media(min-width: 701px) {
+  .app.cinema-mode .sidebar {
+    transform: translateX(-110%);
+  }
+}
+
+/* Compact Mobile Layout */
 @media(max-width: 700px) {
   .intro-toran {
-    height: 46px;
+    height: 40px;
   }
-  .share-bar {
-    bottom: 8px;
-    padding: 8px 12px;
+  #greet {
+    top: 10%;
     width: 95%;
   }
-  .share-row {
-    flex-direction: column;
-    gap: 6px;
+  #greet small {
+    font-size: 13px;
   }
-  .share-input, .share-btn {
+  #greet h1 {
+    font-size: clamp(28px, 7.5vw, 40px);
+    margin: 1px 0;
+  }
+  #greet p {
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+  .share-bar {
+    bottom: 6px;
+    padding: 7px 10px;
+    width: calc(100% - 16px);
+    max-width: 440px;
+    border-radius: 14px;
+    background: rgba(16, 20, 36, 0.90);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  }
+  .share-label {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .share-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
     width: 100%;
-    min-height: 42px;
-    height: 42px;
+  }
+  .share-input {
+    grid-column: 1 / 2;
+    min-height: 36px;
+    height: 36px;
+    font-size: 13px;
+    padding: 0 10px;
+    border-radius: 9px;
+  }
+  #pv.share-btn {
+    grid-column: 2 / 3;
+    min-height: 36px;
+    height: 36px;
+    font-size: 12px;
+    padding: 0 8px;
+    border-radius: 9px;
+  }
+  #wa.share-btn {
+    grid-column: 1 / 2;
+    min-height: 36px;
+    height: 36px;
+    font-size: 11px;
+    padding: 0 6px;
+    border-radius: 9px;
+  }
+  #cp.share-btn {
+    grid-column: 2 / 3;
+    min-height: 36px;
+    height: 36px;
+    font-size: 11px;
+    padding: 0 6px;
+    border-radius: 9px;
+  }
+  .share-hint {
+    margin-top: 2px;
+    font-size: 10px;
   }
 }
 

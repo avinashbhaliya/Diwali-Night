@@ -431,7 +431,7 @@ body, button, input, select, textarea {
     position: absolute !important;
     top: 0 !important;
     right: 0 !important;
-    bottom: 132px !important;
+    bottom: calc(178px + env(safe-area-inset-bottom, 0px)) !important;
     width: 114px !important;
     height: auto !important;
     padding: 8px 6px !important;
@@ -484,7 +484,7 @@ body, button, input, select, textarea {
     flex-direction: column !important;
     gap: 7px !important;
     margin: 0 !important;
-    padding: 0 0 10px !important;
+    padding: 0 0 35px !important;
     overflow-x: hidden !important;
     overflow-y: visible !important;
   }

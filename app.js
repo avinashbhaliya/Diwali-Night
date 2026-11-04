@@ -81,27 +81,87 @@ function initAudioGraph(){
   }
 }
 
-const introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
+let introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
 if (introAudio) {
   introAudio.preload = 'auto';
 }
 
+let introBuffer = null;
+let introSourceNode = null;
 let introStopTimer = null;
+
+// Preload into Web Audio buffer
+try {
+  fetch('intro.mp3')
+    .then(r => r.arrayBuffer())
+    .then(ab => {
+      getAudioContext();
+      if (audio) return audio.decodeAudioData(ab);
+    })
+    .then(buf => {
+      if (buf) introBuffer = buf;
+    })
+    .catch(() => {});
+} catch (_) {}
+
 function playIntroSound() {
-  if (!sound || !introAudio) return;
+  if (!sound) return;
+
+  if (introStopTimer) {
+    clearTimeout(introStopTimer);
+    introStopTimer = null;
+  }
+
+  let played = false;
+
+  // 1. Web Audio API playback
   try {
-    if (introStopTimer) { clearTimeout(introStopTimer); introStopTimer = null; }
-    introAudio.currentTime = 0;
-    const p = introAudio.play();
-    if (p && p.catch) p.catch(() => {});
-    introStopTimer = setTimeout(() => {
-      stopIntroSound();
-    }, 6000);
+    getAudioContext();
+    if (audio && introBuffer && master) {
+      if (audio.state === 'suspended') {
+        audio.resume().catch(() => {});
+      }
+      if (introSourceNode) {
+        try { introSourceNode.stop(); } catch (_) {}
+      }
+      introSourceNode = audio.createBufferSource();
+      introSourceNode.buffer = introBuffer;
+      introSourceNode.connect(master);
+      introSourceNode.start(0);
+      played = true;
+    }
   } catch (_) {}
+
+  // 2. HTML5 Audio Element playback (synchronously executed)
+  try {
+    if (!played || (introAudio && introAudio.paused)) {
+      if (!introAudio) {
+        introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
+      }
+      if (introAudio) {
+        introAudio.currentTime = 0;
+        introAudio.volume = 1.0;
+        const p = introAudio.play();
+        if (p && p.catch) p.catch(() => {});
+      }
+    }
+  } catch (_) {}
+
+  // Strictly 6 seconds only
+  introStopTimer = setTimeout(() => {
+    stopIntroSound();
+  }, 6000);
 }
 
 function stopIntroSound() {
-  if (introStopTimer) { clearTimeout(introStopTimer); introStopTimer = null; }
+  if (introStopTimer) {
+    clearTimeout(introStopTimer);
+    introStopTimer = null;
+  }
+  if (introSourceNode) {
+    try { introSourceNode.stop(); } catch (_) {}
+    introSourceNode = null;
+  }
   if (introAudio) {
     try {
       introAudio.pause();
@@ -113,8 +173,12 @@ function stopIntroSound() {
 function unlockAudio(){
   try{
     getAudioContext();
-    if(!audio)return Promise.resolve();
+    if(!audio)return;
     initAudioGraph();
+
+    if(audio.state==='suspended'){
+      audio.resume().catch(()=>{});
+    }
 
     // Synchronous silent prime to satisfy iOS Safari WebKit
     try{
@@ -124,26 +188,15 @@ function unlockAudio(){
       source.connect(audio.destination);
       source.start(0);
     }catch(_){}
-
-    try{
-      if(introAudio && introAudio.load) introAudio.load();
-    }catch(_){}
-
-    if(audio.state==='suspended'){
-      return audio.resume().catch(()=>{});
-    }else if(audio.state==='running'){
-      return Promise.resolve();
-    }
   }catch(_){}
-  return Promise.resolve();
 }
 
 let hasIntroPlayedWithSound = false;
 
-// Global unlock on first user tap anywhere
-const firstUserInteraction = async () => {
-  await unlockAudio();
-  if (introAudio && introAudio.paused && sound && !hasIntroPlayedWithSound) {
+// Global unlock & instant trigger on the very first user touch anywhere
+const firstUserInteraction = () => {
+  unlockAudio();
+  if (sound && !hasIntroPlayedWithSound) {
     hasIntroPlayedWithSound = true;
     playIntroSound();
   }

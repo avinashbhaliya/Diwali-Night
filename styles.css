@@ -135,8 +135,9 @@ body, button, input, select, textarea {
 .status {
   position: absolute;
   left: 50%;
-  bottom: 85px;
-  transform: translateX(-50%) translateY(8px);
+  top: clamp(75px, 16vh, 120px);
+  bottom: auto;
+  transform: translateX(-50%) translateY(-10px);
   border: 1px solid #b7e366aa;
   background: #15251bee;
   backdrop-filter: blur(8px);
@@ -160,7 +161,8 @@ body, button, input, select, textarea {
 }
 @media(max-width:700px){
   .status {
-    bottom: 60px;
+    top: clamp(60px, 12vh, 95px);
+    bottom: auto;
     font-size: 14px;
     padding: 8px 18px;
   }

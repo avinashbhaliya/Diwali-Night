@@ -420,7 +420,8 @@ requestAnimationFrame(frame);
 
 /* share controls from sample */
 const nm=$('#nm'),wa=$('#wa'),cp=$('#cp');
-try{if(nm)nm.value=name||localStorage.getItem('dn')||''}catch(e){if(nm)nm.value=name}
+try{localStorage.removeItem('dn');}catch(e){}
+if(nm)nm.value='';
 const cur=()=>clean(nm?nm.value:'');
 const link=()=>location.origin+location.pathname+'?from='+encodeURIComponent(cur());
 function sync(){

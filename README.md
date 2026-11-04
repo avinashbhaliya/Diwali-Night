@@ -1,26 +1,49 @@
-# Diwali Ki Roshni
+# Gaamda ni Diwali (ગામડા ની દિવાળી) 🪔✨
 
-A simple, responsive Diwali celebration website by **@shakti_0.5**.
+> **"Faaltu ni vaat chhodo, fatakda fodo!"**
 
-## Files
-- `index.html`: Home, About Us and Contact views.
-- `styles.css`: responsive layout, sky background, pink cards and black/gold buttons.
-- `app.js`: canvas fireworks, launch animations, synthesized sound and navigation.
-- `instagram-qr.png`: QR for https://www.instagram.com/shakti_0.5/
-- Five `.webp` files: AI-generated photographic firework artwork.
+A fun, interactive Diwali fireworks website in pure **Gujlish** (Gujarati in English letters) with friendly village-boy humor, built by **Avinash Bhaliya** ([@gaamda_no_engineer](https://www.instagram.com/gaamda_no_engineer/)).
 
-## Run
-Open `index.html` in a modern browser. No build step, packages, API keys or backend are required. Sound starts only after an interaction, subject to the visitor's browser settings.
+---
 
-## Put it on GitHub
-Extract the ZIP and upload its contents to the root of your repository. Keep `index.html`, CSS, JavaScript and images together. Publish that folder using GitHub Pages, then share the resulting public Pages address on Instagram. This downloadable site does not require a ChatGPT login.
+## 🚀 Features & Desi Fatakda Collection
+- **Phuljhadi** ("Chaalu karo") — Sparkler glow with crackling sparks.
+- **Anar** ("Anar fodo") — High-energy fountain shooting golden embers.
+- **Chakri** ("Gol gol ghumao") — Spinning ground charkhi with realistic rotation.
+- **Rocket** ("Chandra par moklo") — ISRO-bound projectile bursting across the sky.
+- **Aatishbaji** ("Aakash faad do") — Multi-shot aerial shell bursts filling the night sky.
+- **Badha ek saathe fodo!** — Simultaneous mega dhamaka!
+- **Funny Gujlish Toasts**: Dynamic 2-second funny reactions every time an effect fires (*"Haath dur rakhjo!"*, *"Padosi jaagi gaya!"*, *"3, 2, 1... ISRO ne jaan kari do"*).
+- **Desi Sound FX**: Web Audio API synthesized bursts, whistles, and hisses without bulky mp3 files.
+- **Typography**: Clean Latin pair — **Baloo 2** (Headings & buttons) + **Poppins** (Body).
 
-The website uses relative asset paths and hash navigation, so it works in a GitHub Pages project subdirectory. Do not upload the ZIP alone: upload the extracted files.
+---
 
-## Customise
-Instagram links and page text live in `index.html`. Visual styles live in `styles.css`. Firework effects and audio live in `app.js`. If changing the Instagram account, regenerate the QR image too.
+## 📂 Project Structure
+- `index.html` — Main structure featuring Ghar (Home), Amara Vishe (About), and Vaat Kari Lo (Contact).
+- `styles.css` — Night sky visuals, forest/sage colors, responsive layout, and Baloo 2 + Poppins font styling.
+- `app.js` — HTML5 canvas fireworks physics engine, Web Audio synthesis, and toast management.
+- `instagram-qr.png` — QR code linking directly to [@gaamda_no_engineer](https://www.instagram.com/gaamda_no_engineer/).
+- `.webp` artwork — Hand-drawn/photographic festival illustrations.
 
-## Notes
-- Fireworks and sound are digital simulations; the images are generated artwork.
-- No contact form or data collection is included. Contact opens Instagram.
-- QR destination: https://www.instagram.com/shakti_0.5/
+---
+
+## 💻 How to Run Locally
+Open `index.html` directly in any modern browser:
+```powershell
+Start-Process index.html
+```
+Or start a quick local server:
+```powershell
+python -m http.server 8000
+```
+Then visit [http://localhost:8000](http://localhost:8000).
+
+---
+
+## 👨‍💻 Creator & Personal Details
+- **Developer**: Avinash Bhaliya
+- **Role**: Software Engineer | ખેડૂત પુત્ર (Khedut Putra)
+- **Location**: Talaja, Bhavnagar
+- **Instagram**: [@gaamda_no_engineer](https://www.instagram.com/gaamda_no_engineer/)
+- **Bio**: *Breaking down AI in simple Gujarati 🤖*

@@ -40,18 +40,18 @@
 @media(max-width:700px){.top nav{border-color:#d6bf8d22}.card h3{color:#30273b}}
 
 /* Forest and sage — inspired by the supplied visual reference. */
-:root{--night:#101d18;--surface:#293d31;--gold:#d1ee78;--ivory:#e6eee5;--ink:#102019;--muted:#b6c6b7}body{background:#101d18;color:#e6eee5;font-family:Arial,Helvetica,sans-serif}
+:root{--night:#101d18;--surface:#293d31;--gold:#d1ee78;--ivory:#e6eee5;--ink:#102019;--muted:#b6c6b7}body{background:#101d18;color:#e6eee5;font-family:'Noto Sans Gujarati','Shruti','Nirmala UI','Gujarati Sangam MN',Arial,Helvetica,sans-serif}
 .top{height:86px;background:#101d18;border-bottom:1px solid #70846a44;box-shadow:none;padding:0 30px}.brand{font:700 23px/1 Arial,Helvetica,sans-serif;letter-spacing:-.06em;color:#e6eee5;text-shadow:none}.top nav{background:none;border:0;box-shadow:none;gap:10px;padding:5px}.nav-link{font-size:14px;color:#dbe6d8;padding:10px 20px;border-radius:999px}.nav-link:hover{background:#2a3c2e;color:#d0ee8c}.nav-link.active{background:#31452f;color:#d3f17f;border:1px solid #647c49;box-shadow:inset 0 1px 0 #a5bc7522;text-shadow:none}
 .sound{background:#2e402b;border-color:#61794a;color:#e0edce;box-shadow:none;padding:7px 8px 7px 14px;gap:10px;font-size:11px}.sound:hover{border-color:#b6d582;box-shadow:0 0 15px #b5db7033}.toggle-track{width:41px;height:28px;background:#17291c;box-shadow:inset 0 1px 3px #07170a88;padding:3px}.toggle-knob{width:22px;height:22px;background:#d2f064;box-shadow:0 2px 7px #12241566;transform:translateX(13px)}.sound[aria-checked="false"] .toggle-track{background:#526151}.sound[aria-checked="false"] .toggle-knob{background:#c1cdbc;transform:translateX(0)}
-.sidebar{width:326px;padding:25px 20px;background:#17271f;border-left:1px solid #6b826344;box-shadow:none}.side-title{font:700 23px/1.2 Arial,Helvetica,sans-serif;letter-spacing:-.04em;color:#e5eddf}.side-note{color:#b2c5a4;font-size:9px;letter-spacing:.18em}.cards{gap:12px}.card{background:#2b4032;border:1px solid #51674a88;border-radius:18px;box-shadow:0 5px 14px #06140d22;padding:9px;gap:13px}.card:hover{background:#344d3b;border-color:#a1bc79;box-shadow:0 6px 20px #06140d55;transform:translateX(-3px)}.card img{border-radius:12px;border-color:#71835b77;box-shadow:none;width:82px;height:82px}.card h3{font:700 17px/1.2 Arial,Helvetica,sans-serif;letter-spacing:-.025em;color:#edf1df;text-shadow:none}.card button{min-width:119px;border-radius:10px;background:#accf8a;color:#102219;border:1px solid #b8d998;box-shadow:none;text-shadow:none;padding:9px 16px}.card button:hover,.card button:focus-visible{background:#d2ee88;color:#102219;border-color:#d7f599;box-shadow:0 0 17px #b6da6d44;text-shadow:none;transform:translateY(-2px)}.all{border-radius:12px;background:#cbe77d;color:#132318;border-color:#cbe77d;box-shadow:none;padding:13px;font-weight:700}.all:hover,.all:focus-visible{background:#dcf592;color:#132318;border-color:#dcf592;box-shadow:0 4px 20px #b0cd6333;text-shadow:none}
+.sidebar{width:326px;padding:25px 20px;background:#17271f;border-left:1px solid #6b826344;box-shadow:none}.side-title{font:700 22px/1.2 Arial,Helvetica,sans-serif;letter-spacing:normal;color:#e5eddf}.side-note{color:#b2c5a4;font-size:10px;letter-spacing:.04em}.cards{gap:12px}.card{background:#2b4032;border:1px solid #51674a88;border-radius:18px;box-shadow:0 5px 14px #06140d22;padding:9px;gap:13px}.card:hover{background:#344d3b;border-color:#a1bc79;box-shadow:0 6px 20px #06140d55;transform:translateX(-3px)}.card img{border-radius:12px;border-color:#71835b77;box-shadow:none;width:82px;height:82px}.card h3{font:700 17px/1.2 Arial,Helvetica,sans-serif;letter-spacing:normal;color:#edf1df;text-shadow:none}.card button{min-width:119px;border-radius:10px;background:#accf8a;color:#102219;border:1px solid #b8d998;box-shadow:none;text-shadow:none;padding:9px 16px}.card button:hover,.card button:focus-visible{background:#d2ee88;color:#102219;border-color:#d7f599;box-shadow:0 0 17px #b6da6d44;text-shadow:none;transform:translateY(-2px)}.all{border-radius:12px;background:#cbe77d;color:#132318;border-color:#cbe77d;box-shadow:none;padding:13px;font-weight:700}.all:hover,.all:focus-visible{background:#dcf592;color:#132318;border-color:#dcf592;box-shadow:0 4px 20px #b0cd6333;text-shadow:none}
 .stage{background:radial-gradient(ellipse at 50% 115%,#71925420,transparent 45%),radial-gradient(ellipse at 5% 0,#30483f44,transparent 65%),linear-gradient(#091610,#101f19 67%,#1b2c20)}.stage:before{background:radial-gradient(ellipse at 15% 55%,#acc5ad09,transparent 38%),radial-gradient(ellipse at 75% 72%,#b8c79507,transparent 42%)}.stars{opacity:.32}.greeting{opacity:.7;top:16%}.greeting h1{font:750 clamp(40px,6.4vw,92px)/1.05 Arial,Helvetica,sans-serif;letter-spacing:-.065em;color:#e5eee1;text-shadow:none;font-style:normal}.greeting h1 em{display:block;font:italic 1.12em/1 Georgia,serif;font-weight:400;color:#aed48c;letter-spacing:-.055em;margin-top:7px}.greeting p{color:#b5cba6;font-family:Arial,sans-serif;font-size:9px;letter-spacing:.25em;margin-top:24px}.horizon{background:linear-gradient(0deg,#08150ee0,transparent);box-shadow:0 -15px 90px #adca5e09}
-.info-page{background:radial-gradient(ellipse at 90% 15%,#42604133,transparent 58%),#101d18}.info-page h1{font:750 clamp(39px,5.5vw,72px)/1.08 Arial,Helvetica,sans-serif;letter-spacing:-.06em;color:#e6eee5}.info-page h1 em{font-family:Georgia,serif;font-weight:400;color:#acd38b}.kicker{color:#b7d58e;font-weight:700;letter-spacing:.2em}.intro,.about-copy p,.contact-card p{color:#b8c9b8}.about-copy h2,.contact-card h2{font-family:Arial,sans-serif;font-size:26px;font-weight:700;letter-spacing:-.035em;color:#e6eee5}.about-copy a:not(.cta){color:#d0e998}.about-image{border-radius:22px;border:1px solid #637d5544;box-shadow:none}.cta{background:#aed18c;color:#102019;border-radius:11px;box-shadow:none;padding:14px 25px}.cta:hover{background:#c9e7a1;box-shadow:0 6px 20px #a2cb6e22}.thank-you{border-color:#6d836144}.thank-you p{color:#b5d98f;text-shadow:none;font-size:37px}.thank-you span{color:#c3d5bd;font-size:10px;letter-spacing:.22em}.contact-card{background:#293d30;border:1px solid #5f785044;border-radius:25px;box-shadow:0 12px 30px #07140d22;padding:34px}.instagram-word{font:700 34px Arial,sans-serif;letter-spacing:-.05em;color:#d0e7a6;text-shadow:none}.contact-card h2{color:#edf1df}.qr-box{border-radius:18px;background:#fff8ed;border-color:#e9ebd4;box-shadow:0 7px 18px #09160f33}.credit{color:#a9bda6}.nav-link:focus-visible,.sound:focus-visible,.cta:focus-visible{outline:2px solid #d2ee86;outline-offset:4px}
+.info-page{background:radial-gradient(ellipse at 90% 15%,#42604133,transparent 58%),#101d18}.info-page h1{font:750 clamp(39px,5.5vw,72px)/1.08 Arial,Helvetica,sans-serif;letter-spacing:normal;color:#e6eee5}.info-page h1 em{font-family:Georgia,serif;font-weight:400;color:#acd38b;font-style:normal}.kicker{color:#b7d58e;font-weight:700;letter-spacing:.08em}.intro,.about-copy p,.contact-card p{color:#b8c9b8}.about-copy h2,.contact-card h2{font-family:Arial,sans-serif;font-size:26px;font-weight:700;letter-spacing:normal;color:#e6eee5}.about-copy a:not(.cta){color:#d0e998}.about-image{border-radius:22px;border:1px solid #637d5544;box-shadow:none}.cta{background:#aed18c;color:#102019;border-radius:11px;box-shadow:none;padding:14px 25px}.cta:hover{background:#c9e7a1;box-shadow:0 6px 20px #a2cb6e22}.thank-you{border-color:#6d836144}.thank-you p{color:#b5d98f;text-shadow:none;font-size:35px;font-style:normal}.thank-you span{color:#c3d5bd;font-size:10px;letter-spacing:.22em}.contact-card{background:#293d30;border:1px solid #5f785044;border-radius:25px;box-shadow:0 12px 30px #07140d22;padding:34px}.instagram-word{font:700 32px Arial,sans-serif;letter-spacing:normal;color:#d0e7a6;text-shadow:none}.contact-card h2{color:#edf1df}.qr-box{border-radius:18px;background:#fff8ed;border-color:#e9ebd4;box-shadow:0 7px 18px #09160f33}.credit{color:#a9bda6}.nav-link:focus-visible,.sound:focus-visible,.cta:focus-visible{outline:2px solid #d2ee86;outline-offset:4px}
 @media(max-width:700px){.top{min-height:108px;height:auto;padding:13px 15px}.brand{font-size:21px}.top nav{width:auto;gap:2px}.nav-link{font-size:12px;padding:8px 17px}.sound{font-size:10px;padding:5px 6px 5px 10px}.toggle-track{width:36px;height:24px}.toggle-knob{width:18px;height:18px;transform:translateX(12px)}.sidebar{width:100%;height:175px;padding:11px 12px;border-left:0}.side-title{font-size:17px}.card{padding:7px;gap:8px;flex-basis:170px}.card img{width:61px;height:78px}.card h3{font-size:15px;color:#edf1df}.card button{min-width:0;font-size:11px;padding:8px 12px}.all{padding:7px 12px;font-size:11px}.greeting h1{font-size:45px}.greeting{top:12%}.info-page h1{font-size:43px}.contact-card{padding:25px}.instagram-word{font-size:31px}}
 
 /* Charcoal sky and a grounded celebration. */
-.brand{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:27px;font-weight:600;letter-spacing:-.045em;color:#f4d38c;text-shadow:0 1px 2px #090d0b,0 0 16px #edbd5520}
+.brand{font-family:'Noto Sans Gujarati','Shruti','Nirmala UI',Georgia,'Times New Roman',serif;font-style:normal;font-size:25px;font-weight:700;letter-spacing:normal;color:#f4d38c;text-shadow:0 1px 2px #090d0b,0 0 16px #edbd5520}
 .sound{padding:5px 6px 5px 11px;gap:7px;font-size:10px}.toggle-track{width:32px;height:21px;padding:3px}.toggle-knob{width:15px;height:15px;transform:translateX(11px)}
-.stage{background:radial-gradient(ellipse at 50% 102%,#6c594023,transparent 46%),radial-gradient(ellipse at 15% 5%,#38404a22,transparent 65%),linear-gradient(#15171b,#1d1d23 70%,#29262a)}.stage:before{background:radial-gradient(ellipse at 15% 55%,#d8d2cc08,transparent 38%),radial-gradient(ellipse at 75% 72%,#c4bcb708,transparent 42%)}.stars{opacity:.26}.greeting{top:15%}.greeting h1{font-size:clamp(35px,6vw,84px);white-space:nowrap}.greeting h1 em{display:inline;font-size:1.12em;margin:0;color:#b5d899}.ground{position:absolute;left:0;right:0;bottom:0;height:clamp(95px,19%,170px);background:linear-gradient(180deg,#39333500,#39333533 14%,#302d2d66),url('ground.svg') center bottom/100% 100%;border-bottom:1px solid #61544b66;box-shadow:0 -18px 55px #ead5af05;pointer-events:none}.horizon{bottom:13%;height:70px;background:linear-gradient(0deg,#5d4a3520,transparent);box-shadow:none}.about-image{object-fit:cover;max-height:340px;aspect-ratio:3/2;border-radius:22px;border:1px solid #70875c55;box-shadow:0 14px 35px #06110944}
+.stage{background:radial-gradient(ellipse at 50% 102%,#6c594023,transparent 46%),radial-gradient(ellipse at 15% 5%,#38404a22,transparent 65%),linear-gradient(#15171b,#1d1d23 70%,#29262a)}.stage:before{background:radial-gradient(ellipse at 15% 55%,#d8d2cc08,transparent 38%),radial-gradient(ellipse at 75% 72%,#c4bcb708,transparent 42%)}.stars{opacity:.26}.greeting{top:15%}.greeting h1{font-size:clamp(35px,6vw,84px);white-space:nowrap;letter-spacing:normal}.greeting h1 em{display:inline;font-size:1.12em;margin:0;color:#b5d899;font-style:normal}.ground{position:absolute;left:0;right:0;bottom:0;height:clamp(95px,19%,170px);background:linear-gradient(180deg,#39333500,#39333533 14%,#302d2d66),url('ground.svg') center bottom/100% 100%;border-bottom:1px solid #61544b66;box-shadow:0 -18px 55px #ead5af05;pointer-events:none}.horizon{bottom:13%;height:70px;background:linear-gradient(0deg,#5d4a3520,transparent);box-shadow:none}.about-image{object-fit:cover;max-height:340px;aspect-ratio:3/2;border-radius:22px;border:1px solid #70875c55;box-shadow:0 14px 35px #06110944}
 @media(max-width:700px){.brand{font-size:24px}.sound{font-size:9px;padding:5px 6px 5px 9px;gap:6px}.toggle-track{width:29px;height:19px;padding:3px}.toggle-knob{width:13px;height:13px;transform:translateX(10px)}.greeting h1{font-size:clamp(31px,8.5vw,46px)}.greeting{top:15%}.about-image{height:auto;max-height:none}}
 
 /* Reference artwork, kept separate from the firework canvas. */
@@ -76,3 +76,92 @@
 /* Blend the illustration into the About page rather than framing it. */
 #about .about-image{display:block;overflow:visible;background:none;border:0;border-radius:0;box-shadow:none;filter:none;width:calc(100% + 40px);max-width:none;margin-left:-20px;mask-image:radial-gradient(ellipse 73% 76% at 50% 43%,#000 57%,transparent 100%)}
 @media(max-width:700px){#about .about-image{width:100%;margin:0;mask-image:radial-gradient(ellipse 76% 80% at 50% 43%,#000 58%,transparent 100%)}}
+
+
+/* Baloo 2 + Poppins Typography & Toast Styling */
+body, button, input, select, textarea {
+  font-family: 'Poppins', sans-serif;
+}
+.brand, .side-title, .greeting h1, .info-page h1, .about-copy h2, .contact-card h2, .card h3, .card button, .all, .cta, .thank-you p, .instagram-word, .kicker, .nav-link, .sound {
+  font-family: 'Baloo 2', cursive, sans-serif;
+}
+.brand {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.greeting h1 {
+  font-family: 'Baloo 2', cursive, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.greeting p {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(14px, 2.2vw, 20px);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #d8f58b;
+  margin-top: 10px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+.nav-link {
+  font-size: 14px;
+  font-weight: 600;
+}
+.side-title {
+  font-size: 24px;
+  font-weight: 800;
+}
+.side-note {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.card h3 {
+  font-size: 18px;
+  font-weight: 700;
+}
+.card button {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.all {
+  font-weight: 800;
+  font-size: 15px;
+}
+.status {
+  position: absolute;
+  left: 50%;
+  bottom: 85px;
+  transform: translateX(-50%) translateY(8px);
+  border: 1px solid #b7e366aa;
+  background: #15251bee;
+  backdrop-filter: blur(8px);
+  padding: 10px 24px;
+  border-radius: 999px;
+  color: #e5fbb4;
+  font-family: 'Baloo 2', cursive, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(183,227,102,0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 100;
+  white-space: nowrap;
+}
+.status.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+@media(max-width:700px){
+  .status {
+    bottom: 60px;
+    font-size: 14px;
+    padding: 8px 18px;
+  }
+}

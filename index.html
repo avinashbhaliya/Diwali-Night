@@ -1,4 +1,152 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101d18"><title>Diwali Ki Roshni | Light Up Your Diwali</title><meta name="description" content="Celebrate Diwali with beautiful interactive fireworks. Created by @shakti_0.5. Launch rockets, light sparklers and fill the night with colour."><meta property="og:title" content="Diwali Ki Roshni"><meta property="og:description" content="A little sparkle. A sky full of joy. Celebrate Diwali with me!"><meta property="og:type" content="website"><link rel="stylesheet" href="styles.css"></head><body><div class="app"><header class="top"><div class="brand">Diwali Night</div><nav aria-label="Main navigation"><a href="#home" class="nav-link active" aria-current="page">Home</a><a href="#about" class="nav-link">About Us</a><a href="#contact" class="nav-link">Contact</a></nav><button class="sound" id="sound" role="switch" aria-checked="true" aria-label="Sound"><span class="sound-label">Sound On</span><span class="toggle-track" aria-hidden="true"><span class="toggle-knob"></span></span></button></header><div class="body" id="home" data-page><aside class="sidebar"><h2 class="side-title">Choose a firework</h2><p class="side-note">Tap to light up the night</p><button class="all" id="all">Light them all</button><div class="cards" style="margin-top:16px"><article class="card"><img src="sparkler.webp" alt="Sparkler"><div class="card-info"><h3>Sparkler</h3><button data-kind="sparkler">Light up</button></div></article><article class="card"><img src="fountain.webp" alt="Fountain firework"><div class="card-info"><h3>Fountain</h3><button data-kind="fountain">Light up</button></div></article><article class="card"><img src="spinner.webp" alt="Chakri"><div class="card-info"><h3>Chakri</h3><button data-kind="spinner">Light up</button></div></article><article class="card"><img src="rocket.webp" alt="Rocket firework"><div class="card-info"><h3>Rocket</h3><button data-kind="rocket">Launch</button></div></article><article class="card"><img src="firework.webp" alt="Aerial fireworks"><div class="card-info"><h3>Fireworks</h3><button data-kind="firework">Launch</button></div></article></div></aside><main class="stage" id="stage"><div class="stars"></div><div class="greeting"><h1>Happy <em>Diwali.</em></h1></div><div class="festive-hands" aria-hidden="true"><div class="hand-half hand-left"><img src="festive-hands.webp" alt=""></div><div class="hand-half hand-right"><img src="festive-hands.webp" alt=""></div></div><div class="horizon"></div><div class="ground" aria-hidden="true"></div><canvas id="fx"></canvas><div class="status" aria-live="polite"></div></main></div>
-<section id="about" class="info-page" data-page hidden><div class="info-wrap"><p class="kicker">A SKY FULL OF JOY</p><h1>A little light.<br>A lot of <em>happiness.</em></h1><p class="intro">Diwali Ki Roshni brings the magic of Diwali to your screen. A sparkler in your hand, a rocket in the sky, and a moment worth sharing.</p><div class="about-grid"><div class="about-copy"><h2>Made to celebrate, together.</h2><p>A simple celebration of light, colour and festive memories. Tap your favourite firework and make the night your own.</p><p>Created by <a href="https://www.instagram.com/shakti_0.5/" target="_blank" rel="noopener noreferrer">@shakti_0.5</a>. Follow along on Instagram and share a little Diwali joy.</p><a class="cta" href="#home">Light up the sky</a></div><img class="about-image" src="about-integrated-fireworks.webp" alt="Flat graphic illustration of a chakri, matka fountain, sutli firecracker and stick rocket" loading="lazy"></div><div class="thank-you"><p>Thanks for Visiting</p><span>Shivshakti Goswami</span></div></div></section>
-<section id="contact" class="info-page" data-page hidden><div class="info-wrap contact-wrap"><p class="kicker">LET’S CONNECT</p><h1>Keep the <em>sparkle</em> going.</h1><p class="intro">Say hello, share your celebration, or send your feedback on Instagram.</p><div class="contact-card"><div><span class="instagram-word">Instagram</span><h2>@shakti_0.5</h2><p>Your next festive moment is one tap away.</p><a class="cta" href="https://www.instagram.com/shakti_0.5/" target="_blank" rel="noopener noreferrer">Visit Instagram ↗</a></div><a class="qr-box" href="https://www.instagram.com/shakti_0.5/" target="_blank" rel="noopener noreferrer" aria-label="Open shakti_0.5 on Instagram"><img src="instagram-qr.png" alt="QR code for instagram.com/shakti_0.5" width="220" height="220"><span>Scan to connect</span></a></div><p class="credit">Made with a little Diwali magic · @shakti_0.5</p></div></section>
-</div><script src="app.js" defer></script></body></html>
+<!doctype html>
+<html lang="gu-Latn">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101d18">
+  <title>Gaamda ni Diwali | Happy Diwali, Kaleja!</title>
+  <meta name="description"
+    content="Gaamda ni Diwali screen par! Phuljhadi, Anar, Chakri, Rocket ne Aatishbaji fodo. Banavnar: @gaamda_no_engineer (Avinash Bhaliya).">
+  <meta property="og:title" content="Gaamda ni Diwali">
+  <meta property="og:description"
+    content="Faaltu ni vaat chhodo, fatakda fodo! Desi Diwali dhamaka with @gaamda_no_engineer.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">Gaamda ni Diwali</div>
+      <nav aria-label="Main Navigation">
+        <a href="#home" class="nav-link active" aria-current="page">Ghar</a>
+        <a href="#about" class="nav-link">Amara Vishe</a>
+        <a href="#contact" class="nav-link">Vaat Kari Lo</a>
+      </nav>
+      <button class="sound" id="sound" role="switch" aria-checked="true" aria-label="Dhamako Sound">
+        <span class="sound-label">Dhamako ON</span>
+        <span class="toggle-track" aria-hidden="true"><span class="toggle-knob"></span></span>
+      </button>
+    </header>
+
+    <div class="body" id="home" data-page>
+      <aside class="sidebar">
+        <h2 class="side-title">Kayo fatakdo foduu?</h2>
+        <p class="side-note">Tap karo ne aakash ma ujas karo</p>
+        <button class="all" id="all">Badha ek saathe fodo!</button>
+        <div class="cards" style="margin-top:16px">
+          <article class="card">
+            <img src="sparkler.webp" alt="Phuljhadi">
+            <div class="card-info">
+              <h3>Phuljhadi</h3>
+              <button data-kind="sparkler">Chaalu karo</button>
+            </div>
+          </article>
+          <article class="card">
+            <img src="fountain.webp" alt="Anar">
+            <div class="card-info">
+              <h3>Anar</h3>
+              <button data-kind="fountain">Dadam fodo</button>
+            </div>
+          </article>
+          <article class="card">
+            <img src="spinner.webp" alt="Chakri">
+            <div class="card-info">
+              <h3>Chakri</h3>
+              <button data-kind="spinner">Gol gol feravo</button>
+            </div>
+          </article>
+          <article class="card">
+            <img src="rocket.webp" alt="Rocket">
+            <div class="card-info">
+              <h3>Rocket</h3>
+              <button data-kind="rocket">Chandra par moklo</button>
+            </div>
+          </article>
+          <article class="card">
+            <img src="firework.webp" alt="Aatishbaji">
+            <div class="card-info">
+              <h3>Aatishbaji</h3>
+              <button data-kind="firework">Aakash faad do</button>
+            </div>
+          </article>
+        </div>
+      </aside>
+
+      <main class="stage" id="stage">
+        <div class="stars"></div>
+        <div class="greeting">
+          <h1>Happy Diwali, <em>Kaleja!</em></h1>
+          <p>Faaltu ni vaat chhodo, fatakda fodo</p>
+        </div>
+        <div class="festive-hands" aria-hidden="true">
+          <div class="hand-half hand-left"><img src="festive-hands.webp" alt=""></div>
+          <div class="hand-half hand-right"><img src="festive-hands.webp" alt=""></div>
+        </div>
+        <div class="horizon"></div>
+        <div class="ground" aria-hidden="true"></div>
+        <canvas id="fx"></canvas>
+        <div class="status" aria-live="polite"></div>
+      </main>
+    </div>
+
+    <section id="about" class="info-page" data-page hidden>
+      <div class="info-wrap">
+        <p class="kicker">Gaam ni Diwali, Screen par</p>
+        <h1>Thodo ujas,<br>ghano <em>dhamal.</em></h1>
+        <p class="intro">Gaamda ni Diwali ma je maja aave e biji kyay na male! Ek haath ma phuljhadi, aakash ma rocket,
+          ne padosi na ghar ma dhuando. Aavya cho to jami ne jaajo ne screen par full fatakda fodo!</p>
+        <div class="about-grid">
+          <div class="about-copy">
+            <h2>Khedut Putra no Desi Jugaad</h2>
+            <p>Aapde gaamda na maanas, tame ne hu badha bhega mali ne aakash roshan karie. Tamaro gamto fatakdo tap karo
+              ne bindaas dhamako karo!</p>
+            <p>Banavnar: <strong>Avinash Bhaliya</strong> (<a href="https://www.instagram.com/gaamda_no_engineer/"
+                target="_blank" rel="noopener noreferrer">@gaamda_no_engineer</a>) — Talaja, Bhavnagar no software
+              engineer ne khedut putra! Instagram par follow karo ne bindaas connected raho.</p>
+            <a class="cta" href="#home">Aakash ma dhamako karo</a>
+          </div>
+          <img class="about-image" src="about-integrated-fireworks.webp"
+            alt="Chakri, Anar, Kothi ne Rocket no desi illustration" loading="lazy">
+        </div>
+        <div class="thank-you">
+          <p>Aavva badal aabhar, pachha aavjo</p>
+          <span>Avinash Bhaliya · Talaja, Bhavnagar</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="info-page" data-page hidden>
+      <div class="info-wrap contact-wrap">
+        <p class="kicker">Aavo vaat karie</p>
+        <h1>Message karo, <em>chai</em> pivdavis.</h1>
+        <p class="intro">Kain pan vaat karvi hoy, navi technology shikhvi hoy ke khali 'Ram Ram' kehvu hoy, seedha
+          Instagram par aavi jaav!</p>
+        <div class="contact-card">
+          <div>
+            <span class="instagram-word">Instagram</span>
+            <h2>@gaamda_no_engineer</h2>
+            <p>Avinash Bhaliya · Software Engineer | Khedut Putra | Talaja, Bhavnagar</p>
+            <a class="cta" href="https://www.instagram.com/gaamda_no_engineer/" target="_blank"
+              rel="noopener noreferrer">Instagram ma aavi jaav ↗</a>
+          </div>
+          <a class="qr-box" href="https://www.instagram.com/gaamda_no_engineer/" target="_blank"
+            rel="noopener noreferrer" aria-label="Open @gaamda_no_engineer on Instagram">
+            <img src="instagram-qr.png" alt="QR code for instagram.com/gaamda_no_engineer" width="220" height="220">
+            <span>Scan karo ne bhega thav</span>
+          </a>
+        </div>
+        <p class="credit">Desi jugaad ne thoda Diwali magic sathe banavelu · @gaamda_no_engineer</p>
+      </div>
+    </section>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+
+</html>

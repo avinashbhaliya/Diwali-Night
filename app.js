@@ -110,11 +110,6 @@ function stopIntroSound() {
   }
 }
 
-function hideSoundPrompt(){
-  const p=document.querySelector('#sound-prompt');
-  if(p)p.classList.add('hidden');
-}
-
 function unlockAudio(){
   try{
     getAudioContext();
@@ -135,11 +130,8 @@ function unlockAudio(){
     }catch(_){}
 
     if(audio.state==='suspended'){
-      return audio.resume().then(()=>{
-        if(audio.state==='running')hideSoundPrompt();
-      }).catch(()=>{});
+      return audio.resume().catch(()=>{});
     }else if(audio.state==='running'){
-      hideSoundPrompt();
       return Promise.resolve();
     }
   }catch(_){}
@@ -148,13 +140,12 @@ function unlockAudio(){
 
 let hasIntroPlayedWithSound = false;
 
-// Global unlock & play opening sequence on first user tap anywhere
+// Global unlock on first user tap anywhere
 const firstUserInteraction = async () => {
   await unlockAudio();
-  hideSoundPrompt();
-  if (!hasIntroPlayedWithSound) {
+  if (introAudio && introAudio.paused && sound && !hasIntroPlayedWithSound) {
     hasIntroPlayedWithSound = true;
-    show();
+    playIntroSound();
   }
   ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
     window.removeEventListener(e, firstUserInteraction);
@@ -163,18 +154,6 @@ const firstUserInteraction = async () => {
 ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
   window.addEventListener(e, firstUserInteraction, { passive: true });
 });
-
-// Dedicated sound prompt click
-const soundPromptBtn = document.querySelector('#sound-prompt');
-if (soundPromptBtn) {
-  soundPromptBtn.onclick = async (e) => {
-    e.stopPropagation();
-    await unlockAudio();
-    hideSoundPrompt();
-    hasIntroPlayedWithSound = true;
-    show();
-  };
-}
 
 // Initial silent unlock attempt (succeeds if browser allows autoplay)
 unlockAudio().catch(()=>{});
@@ -749,15 +728,7 @@ stage.addEventListener('click',(e)=>{
 Promise.race([
   document.fonts.load('800 80px "Baloo 2"'),
   new Promise(r=>setTimeout(r,300))
-]).then(async ()=>{
-  await unlockAudio();
-  if(audio && audio.state === 'running'){
-    hasIntroPlayedWithSound = true;
-    hideSoundPrompt();
-    show();
-  } else {
-    setTimeout(()=>{
-      if(!hasIntroPlayedWithSound) show();
-    }, 350);
-  }
+]).then(()=>{
+  unlockAudio().catch(()=>{});
+  show();
 });

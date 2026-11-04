@@ -123,7 +123,7 @@ function soundEffect(kind){
   if(kind==='burst'){noise(.13,4800,.5,'boom');noise(1.5,600,.6,'boom');tone(130,35,.7,.4);noise(.9,3200,.12)}
 }
 
-function schedule(kind,delay=0,offset=0){queue.push({kind,due:clock+delay,offset});stage.classList.add('active')}
+function schedule(kind,delay=0,offset=0){queue.push({kind,due:clock+delay,offset});stage.classList.add('active');syncStage();}
 let isIntroRunning = false;
 function syncStage(){
   const isBusy = Boolean(effects.length||particles.length||flashes.length||queue.length||P.length||RK.length||isIntroRunning||(sound&&clock<audioUntil));
@@ -171,6 +171,7 @@ function launch(kind){
   if(kind==='spinner'){effects.push({kind,x,y,t:0,d:190});soundEffect(kind)}
   if(kind==='rocket')projectile('rocket');
   if(kind==='firework'){projectile('shell',-Math.min(120,W*.18));schedule('shell',39,Math.min(120,W*.18));schedule('shell',78,0)}
+  syncStage();
 }
 
 document.querySelectorAll('[data-kind]').forEach(b=>b.onclick=async()=>{await unlockAudio();triggerToast(b.dataset.kind);launch(b.dataset.kind)});

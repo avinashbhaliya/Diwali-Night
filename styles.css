@@ -357,43 +357,49 @@ body, button, input, select, textarea {
 }
 
 /* UI Transitions for Smooth Clearing & Restoring */
-.top, .sidebar, .share-bar, #greet, .festive-hands {
+.top, .sidebar, .share-bar, #greet, .festive-hands, .intro-toran, #toran {
   transition: transform 0.42s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.35s ease;
 }
 
 /* Cinema Mode (Clears entire screen during fireworks, preview & opening show) */
 .app.cinema-mode .top {
-  transform: translateY(-110%) !important;
+  transform: translateY(-120%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.app.cinema-mode .intro-toran,
+.app.cinema-mode #toran {
+  transform: translateY(-130%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 .app.cinema-mode .sidebar {
-  transform: translateX(120%) !important;
+  transform: translateX(125%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
-.app.cinema-mode .share-bar {
+.app.cinema-mode .share-bar,
+.app.cinema-mode #bar {
   transform: translateY(140%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
-.app.cinema-mode #greet {
+.app.cinema-mode #greet,
+.app.cinema-mode .greeting {
   opacity: 0 !important;
   pointer-events: none !important;
 }
 .app.cinema-mode .festive-hands {
   opacity: 0 !important;
-  pointer-events: none !important;
-}
-.app.cinema-mode .greeting {
-  opacity: 0 !important;
+  visibility: hidden !important;
   pointer-events: none !important;
 }
 @media(min-width: 701px) {
   .app.cinema-mode .sidebar {
-    transform: translateX(120%) !important;
+    transform: translateX(125%) !important;
   }
-  .app.cinema-mode .share-bar {
+  .app.cinema-mode .share-bar,
+  .app.cinema-mode #bar {
     transform: translateX(-50%) translateY(150%) !important;
   }
 }
@@ -424,18 +430,18 @@ body, button, input, select, textarea {
     top: 0 !important;
     right: 0 !important;
     bottom: 132px !important;
-    width: 106px !important;
+    width: 114px !important;
     height: auto !important;
     padding: 8px 6px !important;
     display: flex !important;
     flex-direction: column !important;
-    border-left: 1px solid rgba(255, 176, 32, 0.3) !important;
+    border-left: 1px solid rgba(255, 180, 50, 0.3) !important;
     border-top: none !important;
     border-right: none !important;
     border-bottom: none !important;
-    background: rgba(18, 14, 32, 0.85) !important;
-    backdrop-filter: blur(10px) !important;
-    box-shadow: -5px 0 22px rgba(0, 0, 0, 0.55) !important;
+    background: rgba(14, 12, 26, 0.88) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: -5px 0 22px rgba(0, 0, 0, 0.6) !important;
     z-index: 25 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -443,13 +449,14 @@ body, button, input, select, textarea {
   }
   .side-title {
     display: block !important;
-    font-size: 11.5px !important;
+    font-size: 11px !important;
     font-weight: 800 !important;
     text-align: center !important;
-    color: #ffe3ad !important;
-    margin: 0 0 4px !important;
+    color: #ffe6a0 !important;
+    margin: 0 0 5px !important;
     line-height: 1.2 !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
   }
   .side-note {
     display: none !important;
@@ -460,11 +467,15 @@ body, button, input, select, textarea {
     margin: 0 0 8px !important;
     padding: 6px 3px !important;
     font-size: 9.5px !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
     border-radius: 8px !important;
     text-align: center !important;
     line-height: 1.15 !important;
     white-space: normal !important;
+    background: linear-gradient(135deg, #ffc837, #ff8008) !important;
+    color: #1e0d00 !important;
+    border: 1px solid #ffe394 !important;
+    box-shadow: 0 3px 12px rgba(255, 128, 8, 0.4) !important;
   }
   .cards {
     display: flex !important;
@@ -480,33 +491,38 @@ body, button, input, select, textarea {
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
-    padding: 5px 3px !important;
+    padding: 6px 4px !important;
     min-height: unset !important;
     gap: 3px !important;
     border-radius: 12px !important;
     flex: 0 0 auto !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    background: rgba(30, 22, 46, 0.92) !important;
+    border: 1px solid rgba(255, 190, 60, 0.35) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45) !important;
   }
   .card img {
     width: 44px !important;
     height: 44px !important;
     border-radius: 8px !important;
     object-fit: cover !important;
+    border: 1px solid rgba(255, 215, 100, 0.4) !important;
   }
   .card-info {
     width: 100% !important;
     text-align: center !important;
   }
   .card h3 {
-    font-size: 11px !important;
+    font-size: 11.5px !important;
     margin: 0 0 3px !important;
-    color: #392032 !important;
+    color: #fff1d0 !important;
     font-weight: 700 !important;
     line-height: 1.1 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
   }
   .card button {
     font-size: 9.5px !important;
@@ -516,6 +532,11 @@ body, button, input, select, textarea {
     border-radius: 6px !important;
     white-space: nowrap !important;
     line-height: 1.1 !important;
+    background: linear-gradient(135deg, #ffe599, #f7b733) !important;
+    color: #221004 !important;
+    font-weight: 700 !important;
+    border: 1px solid #fff0b8 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
   }
 
   /* Share Card at the ABSOLUTE BOTTOM of the screen */
@@ -529,11 +550,11 @@ body, button, input, select, textarea {
     transform: none !important;
     border-radius: 18px 18px 0 0 !important;
     padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
-    background: rgba(14, 16, 32, 0.95) !important;
-    backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 176, 32, 0.35) !important;
+    background: rgba(12, 10, 24, 0.96) !important;
+    backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(255, 180, 50, 0.38) !important;
     border-bottom: none !important;
-    box-shadow: 0 -6px 26px rgba(0, 0, 0, 0.65) !important;
+    box-shadow: 0 -6px 26px rgba(0, 0, 0, 0.7) !important;
     z-index: 50 !important;
   }
   .share-label {
@@ -541,6 +562,9 @@ body, button, input, select, textarea {
     margin-bottom: 5px !important;
     text-align: center !important;
     display: block !important;
+    color: #ffc93c !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
   }
   .share-row {
     display: grid !important;
@@ -557,6 +581,9 @@ body, button, input, select, textarea {
     font-size: 13px !important;
     padding: 0 10px !important;
     border-radius: 9px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 200, 80, 0.45) !important;
+    color: #fff4de !important;
   }
   #wa.share-btn {
     grid-column: 1 / 2 !important;
@@ -568,9 +595,13 @@ body, button, input, select, textarea {
     justify-content: center !important;
     text-align: center !important;
     font-size: 12px !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
     padding: 6px 8px !important;
     border-radius: 9px !important;
+    background: linear-gradient(135deg, #25D366, #128C7E) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35) !important;
   }
   #cp.share-btn {
     grid-column: 2 / 3 !important;
@@ -581,6 +612,10 @@ body, button, input, select, textarea {
     padding: 0 6px !important;
     border-radius: 9px !important;
     white-space: nowrap !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 180, 50, 0.35) !important;
+    color: #ffe6b0 !important;
+    font-weight: 700 !important;
   }
   #pv.share-btn {
     grid-column: 2 / 3 !important;
@@ -591,11 +626,16 @@ body, button, input, select, textarea {
     padding: 0 6px !important;
     border-radius: 9px !important;
     white-space: nowrap !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 180, 50, 0.35) !important;
+    color: #ffe6b0 !important;
+    font-weight: 700 !important;
   }
   .share-hint {
     margin-top: 3px !important;
     font-size: 10px !important;
     text-align: center !important;
+    color: #ffd9a0 !important;
   }
 
   /* Intro Toran, Greeting & Hands in visible stage area */
@@ -604,27 +644,31 @@ body, button, input, select, textarea {
   }
   #greet {
     top: 14% !important;
-    left: calc(50% - 53px) !important;
-    width: calc(100% - 116px) !important;
+    left: calc(50% - 57px) !important;
+    width: calc(100% - 120px) !important;
     transform: translateX(-50%) !important;
     text-align: center !important;
   }
   #greet small {
     font-size: 12.5px !important;
+    color: #ffd9a0 !important;
   }
   #greet h1 {
     font-size: clamp(22px, 6.2vw, 34px) !important;
     margin: 1px 0 !important;
     line-height: 1.1 !important;
+    color: #ffc23d !important;
+    text-shadow: 0 0 30px rgba(255, 122, 0, 0.5) !important;
   }
   #greet p {
     font-size: 10.5px !important;
     margin-top: 2px !important;
+    color: #d8f58b !important;
   }
   .festive-hands {
     top: 32% !important;
     height: 40% !important;
-    width: calc(100% - 106px) !important;
+    width: calc(100% - 114px) !important;
     left: 0 !important;
   }
 }

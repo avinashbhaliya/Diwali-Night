@@ -6,7 +6,7 @@ const $=s=>document.querySelector(s);
 
 function resize(){
   const b=stage.getBoundingClientRect();
-  W=b.width;H=b.height;
+  W=Math.round(b.width);H=Math.round(b.height);
   dpr=Math.min(devicePixelRatio||1,2);
   mob=W<700;
   for(const c of [canvas,pt]){
@@ -267,22 +267,32 @@ function sampleRocket(x,ty,h,cb){
 }
 
 function textBurst(bx,by){
+  const iW=Math.round(W),iH=Math.round(H);
   const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'],oc=document.createElement('canvas');
-  oc.width=W;oc.height=H;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
-  let fs=Math.min(W/9,96);const set=()=>o.font=`800 ${fs}px "Baloo 2",system-ui,sans-serif`;set();
-  const mw=Math.max(...L.map(t=>o.measureText(t).width));if(mw>W*.85){fs*=W*.85/mw;set()}
-  const cy=H*.42,gap=fs*1.2;L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,W/2,cy+(i-1)*gap)});
-  const d=o.getImageData(0,0,W,H).data;let step=mob?6:4,pts;
+  oc.width=iW;oc.height=iH;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
+  let fs=mob?Math.min(iW/7.2,52):Math.min(iW/9,96);
+  const set=()=>o.font=`800 ${Math.round(fs)}px "Baloo 2",system-ui,sans-serif`;set();
+  const targetW=mob?iW*0.92:iW*0.85;
+  const mw=Math.max(...L.map(t=>o.measureText(t).width));
+  if(mw>targetW){fs*=targetW/mw;set();}
+  const cy=iH*0.40,gap=fs*1.22;
+  L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*gap);});
+  const d=o.getImageData(0,0,iW,iH).data;
+  let step=mob?3:4,pts;
   for(;;){
     pts=[];
-    for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step){
-      const k=(y*W+x)*4;if(d[k+3]>128)pts.push([x,y,d[k],d[k+1],d[k+2]]);
+    for(let y=0;y<iH;y+=step){
+      for(let x=0;x<iW;x+=step){
+        const k=(y*iW+x)*4;
+        if(d[k+3]>120)pts.push([x,y,d[k],d[k+1],d[k+2]]);
+      }
     }
-    if(pts.length<=1800)break;step++;
+    if(pts.length<=(mob?1300:1800)||step>=6)break;
+    step++;
   }
   pts.forEach(([x,y,r,g,b])=>{
     const a=R(0,6.283),s=R(60,260);
-    P.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,tx:x,ty:y,c:`rgb(${r},${g},${b})`,life:99,max:99,g:0,sz:R(1.3,2.1),m:1,ph:R(0,6.283)});
+    P.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,tx:x,ty:y,c:`rgb(${r},${g},${b})`,life:99,max:99,g:0,sz:mob?R(1.7,2.5):R(1.3,2.1),m:1,ph:R(0,6.283)});
   });
   T=performance.now()/1000;
   syncStage();
@@ -327,7 +337,7 @@ function show(){
   petals();
   [[.2,0,330],[.5,250,45],[.8,500,190]].forEach(([k,ms,h])=>at(ms,()=>sampleRocket(W*k,H*R(.15,.35),h)));
   at(1400,()=>sampleRocket(W/2,H*.4,0,(x,y)=>{sampleBurst(x,y,45);textBurst(x,y)}));
-  at(7000,()=>{
+  at(7500,()=>{
     isIntroRunning = false;
     if(g)g.classList.add('on');
     if(bar)bar.classList.remove('dim');
@@ -380,7 +390,7 @@ function frame(now){
     P=P.filter(p=>{
       let a=1;
       if(p.m){
-        if(tt>3.4){p.m=0;p.g=140;p.vx=R(-40,40);p.vy=R(-60,20);p.life=p.max=R(.8,1.6)}
+        if(tt>4.6){p.m=0;p.g=140;p.vx=R(-40,40);p.vy=R(-60,20);p.life=p.max=R(.8,1.6)}
         else{
           p.vx+=((p.tx-p.x)*60-p.vx*9)*dtSec+R(-1,1);
           p.vy+=((p.ty-p.y)*60-p.vy*9)*dtSec+R(-1,1);

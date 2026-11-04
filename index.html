@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#101d18">
-  <title>Gaamda ni Diwali | Happy Diwali, Kaleja!</title>
+  <title>Gaamda ni Diwali | Shubh Diwali, Bhai!</title>
   <meta name="description"
     content="Gaamda ni Diwali screen par! Phuljhadi, Anar, Chakri, Rocket ne Aatishbaji fodo. Banavnar: @gaamda_no_engineer (Avinash Bhaliya).">
   <meta property="og:title" content="Gaamda ni Diwali">
@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Hind:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -81,7 +81,10 @@
 
       <main class="stage" id="stage">
         <div class="stars"></div>
-        <div class="greeting">
+        <canvas id="pt" aria-hidden="true"></canvas>
+        <div class="toran intro-toran" id="toran" aria-hidden="true"></div>
+        <div class="greeting" id="greet">
+          <small id="g1"></small>
           <h1>Happy Diwali, <em>Kaleja!</em></h1>
           <p>Faaltu ni vaat chhodo, fatakda fodo</p>
         </div>
@@ -93,6 +96,17 @@
         <div class="ground" aria-hidden="true"></div>
         <canvas id="fx"></canvas>
         <div class="status" aria-live="polite"></div>
+
+        <div class="bar share-bar" id="bar">
+          <label for="nm" class="share-label">Tamara naam thi banavi ne share karo</label>
+          <div class="row share-row">
+            <input id="nm" class="share-input" maxlength="20" placeholder="Tamaru naam" autocomplete="off" spellcheck="false">
+            <button type="button" id="wa" class="share-btn share-btn-wa" disabled>WhatsApp par moklo</button>
+            <button type="button" id="cp" class="share-btn share-btn-ghost" disabled>Link copy karo</button>
+            <button type="button" id="pv" class="share-btn share-btn-ghost">Preview jovo</button>
+          </div>
+          <small id="hint" class="share-hint">Pehla tamaru naam lakho</small>
+        </div>
       </main>
     </div>
 

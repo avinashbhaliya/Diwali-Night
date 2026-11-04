@@ -54,114 +54,44 @@ function introToast(m){
   toastTimer=setTimeout(()=>{el.classList.remove('show');toastTimer=null},2000);
 }
 
-function getAudioContext(){
-  if(!audio){
-    const AudioCtx=window.AudioContext||window.webkitAudioContext;
-    if(AudioCtx){
-      try{audio=new AudioCtx()}catch(_){}
-    }
-  }
-  return audio;
-}
-
-function initAudioGraph(){
-  if(!audio)return;
-  if(!master){
-    try{
+async function unlockAudio(){
+  try{
+    audio=audio||new(window.AudioContext||window.webkitAudioContext)();
+    if(!master){
       master=audio.createGain();
-      master.gain.value=sound?.9:0;
-      master.connect(audio.destination);
-    }catch(_){}
-    try{
-      const bufferSize=Math.max(22050,(audio.sampleRate||44100)*2);
-      noiseBuffer=audio.createBuffer(1,bufferSize,audio.sampleRate||44100);
+      master.gain.value=sound?.8:0;
+      const limiter=audio.createDynamicsCompressor();
+      limiter.threshold.value=-12;
+      limiter.ratio.value=5;
+      master.connect(limiter);
+      limiter.connect(audio.destination);
+      noiseBuffer=audio.createBuffer(1,audio.sampleRate*2,audio.sampleRate);
       const data=noiseBuffer.getChannelData(0);
-      for(let i=0;i<bufferSize;i++)data[i]=Math.random()*2-1;
-    }catch(_){}
+      for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
+    }
+    if(audio.state!=='running')await audio.resume();
+  }catch(error){
+
   }
 }
 
-let introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
-if (introAudio) {
-  introAudio.preload = 'auto';
-}
-
-let introBuffer = null;
-let introSourceNode = null;
-let introStopTimer = null;
-
-// Preload into Web Audio buffer
-try {
-  fetch('intro.mp3')
-    .then(r => r.arrayBuffer())
-    .then(ab => {
-      getAudioContext();
-      if (audio) return audio.decodeAudioData(ab);
-    })
-    .then(buf => {
-      if (buf) introBuffer = buf;
-    })
-    .catch(() => {});
-} catch (_) {}
-
+let introAudio = null;
 function playIntroSound() {
   if (!sound) return;
-
-  if (introStopTimer) {
-    clearTimeout(introStopTimer);
-    introStopTimer = null;
-  }
-
-  let played = false;
-
-  // 1. Web Audio API playback
   try {
-    getAudioContext();
-    if (audio && introBuffer && master) {
-      if (audio.state === 'suspended') {
-        audio.resume().catch(() => {});
-      }
-      if (introSourceNode) {
-        try { introSourceNode.stop(); } catch (_) {}
-      }
-      introSourceNode = audio.createBufferSource();
-      introSourceNode.buffer = introBuffer;
-      introSourceNode.connect(master);
-      introSourceNode.start(0);
-      played = true;
+    if (!introAudio) {
+      introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
+    }
+    if (introAudio) {
+      introAudio.currentTime = 0;
+      introAudio.volume = 1.0;
+      const p = introAudio.play();
+      if (p && p.catch) p.catch(() => {});
     }
   } catch (_) {}
-
-  // 2. HTML5 Audio Element playback (synchronously executed)
-  try {
-    if (!played || (introAudio && introAudio.paused)) {
-      if (!introAudio) {
-        introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
-      }
-      if (introAudio) {
-        introAudio.currentTime = 0;
-        introAudio.volume = 1.0;
-        const p = introAudio.play();
-        if (p && p.catch) p.catch(() => {});
-      }
-    }
-  } catch (_) {}
-
-  // Strictly 6 seconds only
-  introStopTimer = setTimeout(() => {
-    stopIntroSound();
-  }, 6000);
 }
 
 function stopIntroSound() {
-  if (introStopTimer) {
-    clearTimeout(introStopTimer);
-    introStopTimer = null;
-  }
-  if (introSourceNode) {
-    try { introSourceNode.stop(); } catch (_) {}
-    introSourceNode = null;
-  }
   if (introAudio) {
     try {
       introAudio.pause();
@@ -170,173 +100,64 @@ function stopIntroSound() {
   }
 }
 
-function unlockAudio(){
-  try{
-    getAudioContext();
-    if(!audio)return;
-    initAudioGraph();
-
-    if(audio.state==='suspended'){
-      audio.resume().catch(()=>{});
-    }
-
-    // Synchronous silent prime to satisfy iOS Safari WebKit
-    try{
-      const buffer=audio.createBuffer(1,1,22050);
-      const source=audio.createBufferSource();
-      source.buffer=buffer;
-      source.connect(audio.destination);
-      source.start(0);
-    }catch(_){}
-  }catch(_){}
-}
-
-let hasIntroPlayedWithSound = false;
-
-// Global unlock & instant trigger on the very first user touch anywhere
-const firstUserInteraction = () => {
-  unlockAudio();
-  if (sound && !hasIntroPlayedWithSound) {
-    hasIntroPlayedWithSound = true;
-    playIntroSound();
-  }
-  ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
-    window.removeEventListener(e, firstUserInteraction);
-  });
-};
-['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
-  window.addEventListener(e, firstUserInteraction, { passive: true });
-});
-
-// Initial silent unlock attempt (succeeds if browser allows autoplay)
+// Audio unlock on load & first interaction
 unlockAudio().catch(()=>{});
+const audioUnlockEvents = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'];
+const audioUnlockOnce = async () => {
+  audioUnlockEvents.forEach(e => window.removeEventListener(e, audioUnlockOnce));
+  if (isIntroRunning) playIntroSound();
+  await unlockAudio();
+};
+audioUnlockEvents.forEach(e => window.addEventListener(e, audioUnlockOnce, { passive: true }));
 
-function noise(duration=.5,frequency=1100,volume=.15,type='hiss'){
-  if(!sound)return;
-  try{
-    getAudioContext();
-    if(!audio)return;
-    initAudioGraph();
-    if(!noiseBuffer||!master)return;
-
-    if(audio.state==='suspended'){
-      audio.resume().catch(()=>{});
-    }
-
-    const t=audio.currentTime;
-    const src=audio.createBufferSource();
-    const filter=audio.createBiquadFilter();
-    const gain=audio.createGain();
-
-    src.buffer=noiseBuffer;
-    src.loop=true;
-
-    filter.type=(type==='boom')?'lowpass':'bandpass';
-    filter.frequency.setValueAtTime(Math.max(20,frequency),t);
-    filter.Q.value=(type==='whistle')?4:.7;
-
-    gain.gain.setValueAtTime(0.0001,t);
-    gain.gain.linearRampToValueAtTime(Math.max(0.0001,volume),t+0.02);
-
-    if(type==='hiss'){
-      const steps=Math.min(24,Math.floor(duration*12));
-      for(let i=1;i<steps;i++){
-        gain.gain.linearRampToValueAtTime(volume*(.65+Math.random()*.35),t+i/12);
-      }
-    }
-
-    gain.gain.linearRampToValueAtTime(0.0001,t+duration);
-
-    src.connect(filter);
-    filter.connect(gain);
-    gain.connect(master);
-
-    src.start(t);
-    src.stop(t+duration+0.05);
-
-    src.onended=()=>{
-      try{src.disconnect();filter.disconnect();gain.disconnect()}catch(_){}
-    };
-
-    audioUntil=Math.max(audioUntil,clock+duration*60);
-  }catch(_){}
+function noise(duration=.5,frequency=1100,volume=.12,type='hiss'){
+  if(!sound||!audio||audio.state!=='running'||!master)return;
+  const t=audio.currentTime,src=audio.createBufferSource(),filter=audio.createBiquadFilter(),gain=audio.createGain();
+  src.buffer=noiseBuffer;src.loop=true;
+  filter.type=type==='boom'?'lowpass':'bandpass';
+  filter.frequency.setValueAtTime(frequency,t);
+  filter.Q.value=type==='whistle'?4:.7;
+  gain.gain.setValueAtTime(.001,t);
+  gain.gain.exponentialRampToValueAtTime(volume,t+.015);
+  if(type==='hiss'){for(let i=1;i<duration*12;i++)gain.gain.linearRampToValueAtTime(volume*(.65+Math.random()*.35),t+i/12)}
+  gain.gain.exponentialRampToValueAtTime(.001,t+duration);
+  src.connect(filter);filter.connect(gain);gain.connect(master);
+  src.start(t);src.stop(t+duration+.03);
+  src.onended=()=>{src.disconnect();filter.disconnect();gain.disconnect()};
+  audioUntil=Math.max(audioUntil,clock+duration*60);
 }
 
 function tone(startHz,endHz,duration,volume,wave='sine'){
-  if(!sound)return;
-  try{
-    getAudioContext();
-    if(!audio)return;
-    initAudioGraph();
-    if(!master)return;
-
-    if(audio.state==='suspended'){
-      audio.resume().catch(()=>{});
-    }
-
-    const t=audio.currentTime;
-    const o=audio.createOscillator();
-    const g=audio.createGain();
-
-    o.type=wave;
-    o.frequency.setValueAtTime(Math.max(20,startHz),t);
-    o.frequency.linearRampToValueAtTime(Math.max(20,endHz),t+duration);
-
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.linearRampToValueAtTime(Math.max(0.0001,volume),t+0.02);
-    g.gain.linearRampToValueAtTime(0.0001,t+duration);
-
-    o.connect(g);
-    g.connect(master);
-
-    o.start(t);
-    o.stop(t+duration+0.05);
-
-    o.onended=()=>{
-      try{o.disconnect();g.disconnect()}catch(_){}
-    };
-
-    audioUntil=Math.max(audioUntil,clock+duration*60);
-  }catch(_){}
+  if(!sound||!audio||audio.state!=='running')return;
+  const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();
+  o.type=wave;
+  o.frequency.setValueAtTime(startHz,t);
+  o.frequency.exponentialRampToValueAtTime(endHz,t+duration);
+  g.gain.setValueAtTime(.001,t);
+  g.gain.exponentialRampToValueAtTime(volume,t+.015);
+  g.gain.exponentialRampToValueAtTime(.001,t+duration);
+  o.connect(g);g.connect(master);
+  o.start(t);o.stop(t+duration+.02);
+  o.onended=()=>{o.disconnect();g.disconnect()};
+  audioUntil=Math.max(audioUntil,clock+duration*60);
 }
 
 function soundEffect(kind){
-  if(!sound)return;
-  if(kind==='sparkler'){
-    noise(3.2,4500,.45,'hiss');
-    noise(3.0,2400,.35,'hiss');
-  }
-  if(kind==='fountain'){
-    noise(3.5,2200,.55,'hiss');
-    noise(3.2,4800,.35,'hiss');
-    tone(300,750,3.2,.15,'triangle');
-  }
-  if(kind==='spinner'){
-    noise(3.2,3200,.5,'hiss');
-    tone(650,1400,3.1,.18,'triangle');
-  }
-  if(kind==='rocket'||kind==='shell'){
-    tone(550,2400,1.25,.3,'sine');
-    tone(600,2600,1.2,.2,'triangle');
-    noise(1.3,2500,.45,'whistle');
-  }
-  if(kind==='burst'){
-    noise(.2,3600,.9,'boom');
-    noise(1.2,1200,.85,'boom');
-    tone(380,80,.8,.65,'triangle');
-    tone(180,45,1.0,.5,'sine');
-    noise(.9,2800,.35,'hiss');
-  }
+  if(kind==='sparkler'){noise(3.2,5200,.22);noise(3.1,2300,.08)}
+  if(kind==='fountain'){noise(3.5,1800,.36);noise(3.4,4200,.13)}
+  if(kind==='spinner'){noise(3.2,2900,.28);tone(540,1300,3.1,.035,'triangle')}
+  if(kind==='rocket'||kind==='shell'){noise(1.5,1800,.18);tone(420,1700,1.45,.065)}
+  if(kind==='burst'){noise(.13,4800,.5,'boom');noise(1.5,600,.6,'boom');tone(130,35,.7,.4);noise(.9,3200,.12)}
   if(kind==='bomb'){
-    noise(1.1,5200,.45,'hiss');
-    tone(750,2100,1.1,.15,'triangle');
+    noise(1.1,5600,.22);
+    tone(650,1900,1.1,.04,'triangle');
     setTimeout(()=>{
-      if(!sound)return;
-      noise(.35,3800,1.0,'boom');
-      noise(2.2,1100,1.0,'boom');
-      tone(420,60,1.3,.95,'triangle');
-      tone(160,30,1.5,.85,'sine');
-      noise(1.5,2600,.5,'hiss');
+      if(!sound||!audio||audio.state!=='running')return;
+      noise(.25,5200,.85,'boom');
+      noise(2.2,480,1.0,'boom');
+      tone(160,22,1.4,.85,'triangle');
+      tone(80,18,1.6,.65,'sine');
+      noise(1.2,3400,.25);
     },1100);
     audioUntil=Math.max(audioUntil,clock+3.5*60);
   }
@@ -401,13 +222,10 @@ document.querySelector('#sound').onclick=async e=>{
   b.querySelector('.sound-label').textContent=sound?'Dhamako ON':'Dhamako OFF';
   b.setAttribute('aria-checked',String(sound));
   triggerToast(sound?'soundOn':'soundOff');
+  if (isIntroRunning) playIntroSound();
   await unlockAudio();
-  if(!sound) stopIntroSound();
-  if(master&&audio)master.gain.setTargetAtTime(sound?.9:0,audio.currentTime,.025);
-  if(sound){
-    soundEffect('burst');
-    for(const e of effects)if(!e.done)soundEffect(e.kind);
-  }else audioUntil=clock;
+  if(master)master.gain.setTargetAtTime(sound?.8:0,audio.currentTime,.025);
+  if(sound){for(const e of effects)if(!e.done)soundEffect(e.kind)}else audioUntil=clock;
   syncStage();
 };
 
@@ -516,10 +334,18 @@ let P=[],RK=[],T=null,run=0;
 const hsl=h=>`hsl(${h},100%,62%)`;
 function sp(x,y,a,s,c,life,g,sz){P.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,c,life,max:life,g,sz,m:0})}
 function sampleBurst(x,y,h){
+  if(sound){
+    if(!audio||audio.state!=='running')unlockAudio().then(()=>soundEffect('burst')).catch(()=>{});
+    else soundEffect('burst');
+  }
   const n=mob?70:100;
   for(let i=0;i<n;i++)sp(x,y,R(0,6.283),R(40,230)*Math.sqrt(Math.random()),hsl(h+R(-15,15)),R(1,1.9),90,R(1.2,2.2));
 }
 function sampleRocket(x,ty,h,cb){
+  if(sound){
+    if(!audio||audio.state!=='running')unlockAudio().then(()=>soundEffect('rocket')).catch(()=>{});
+    else soundEffect('rocket');
+  }
   let y=H-90;const vy=-R(560,680);
   RK.push(dt=>{
     y+=vy*dt;
@@ -601,9 +427,9 @@ function show(){
   if(bar)bar.classList.add('dim');
   const at=(ms,fn)=>setTimeout(()=>{if(my===run)fn()},ms);
   petals();
-  [[.2,0,330],[.5,140,45],[.8,280,190]].forEach(([k,ms,h])=>at(ms,()=>sampleRocket(W*k,H*R(.15,.35),h)));
-  at(600,()=>sampleRocket(W/2,H*.4,0,(x,y)=>{sampleBurst(x,y,45);textBurst(x,y)}));
-  at(3200,()=>{
+  [[.2,0,330],[.5,250,45],[.8,500,190]].forEach(([k,ms,h])=>at(ms,()=>sampleRocket(W*k,H*R(.15,.35),h)));
+  at(1400,()=>sampleRocket(W/2,H*.4,0,(x,y)=>{sampleBurst(x,y,45);textBurst(x,y)}));
+  at(7500,()=>{
     isIntroRunning = false;
     if(g)g.classList.add('on');
     if(bar)bar.classList.remove('dim');
@@ -656,7 +482,7 @@ function frame(now){
     P=P.filter(p=>{
       let a=1;
       if(p.m){
-        if(tt>2.6){p.m=0;p.g=140;p.vx=R(-40,40);p.vy=R(-60,20);p.life=p.max=R(.8,1.6)}
+        if(tt>4.6){p.m=0;p.g=140;p.vx=R(-40,40);p.vy=R(-60,20);p.life=p.max=R(.8,1.6)}
         else{
           p.vx+=((p.tx-p.x)*60-p.vx*9)*dtSec+R(-1,1);
           p.vy+=((p.ty-p.y)*60-p.vy*9)*dtSec+R(-1,1);
@@ -742,7 +568,6 @@ function navigate(){
     if(bar)bar.classList.remove('intro-hidden');
     if(g)g.classList.add('on');
   } else {
-    stopIntroSound();
     queue=[];effects=[];particles=[];flashes=[];audioUntil=0;
     P=[];RK=[];T=null;pOn=false;isIntroRunning=false;
     if(pc)pc.clearRect(0,0,W,H);
@@ -760,7 +585,6 @@ addEventListener('hashchange',navigate);navigate();
 document.addEventListener('visibilitychange',()=>{
   previous=0;
   if(document.hidden){
-    stopIntroSound();
     queue=[];effects=[];particles=[];flashes=[];audioUntil=0;
     stage.classList.remove('active');
     if(audio?.state==='running')audio.suspend();
@@ -780,8 +604,5 @@ stage.addEventListener('click',(e)=>{
 /* font check & initial sequence start */
 Promise.race([
   document.fonts.load('800 80px "Baloo 2"'),
-  new Promise(r=>setTimeout(r,300))
-]).then(()=>{
-  unlockAudio().catch(()=>{});
-  show();
-});
+  new Promise(r=>setTimeout(r,1200))
+]).then(show);

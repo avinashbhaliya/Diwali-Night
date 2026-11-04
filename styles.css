@@ -682,6 +682,16 @@ body, .app {
   }
 }
 
+.qr-box img {
+  display: block !important;
+  width: 190px !important;
+  height: auto !important;
+  aspect-ratio: 891 / 1024 !important;
+  object-fit: contain !important;
+  image-rendering: auto !important;
+  border-radius: 12px !important;
+}
+
 @media(prefers-reduced-motion: reduce) {
   .intro-toran {
     transform: none;

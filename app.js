@@ -86,16 +86,22 @@ if (introAudio) {
   introAudio.preload = 'auto';
 }
 
+let introStopTimer = null;
 function playIntroSound() {
   if (!sound || !introAudio) return;
   try {
+    if (introStopTimer) { clearTimeout(introStopTimer); introStopTimer = null; }
     introAudio.currentTime = 0;
     const p = introAudio.play();
     if (p && p.catch) p.catch(() => {});
+    introStopTimer = setTimeout(() => {
+      stopIntroSound();
+    }, 6000);
   } catch (_) {}
 }
 
 function stopIntroSound() {
+  if (introStopTimer) { clearTimeout(introStopTimer); introStopTimer = null; }
   if (introAudio) {
     try {
       introAudio.pause();
@@ -563,9 +569,9 @@ function show(){
   if(bar)bar.classList.add('dim');
   const at=(ms,fn)=>setTimeout(()=>{if(my===run)fn()},ms);
   petals();
-  [[.2,0,330],[.5,250,45],[.8,500,190]].forEach(([k,ms,h])=>at(ms,()=>sampleRocket(W*k,H*R(.15,.35),h)));
-  at(1400,()=>sampleRocket(W/2,H*.4,0,(x,y)=>{sampleBurst(x,y,45);textBurst(x,y)}));
-  at(6800,()=>{
+  [[.2,0,330],[.5,140,45],[.8,280,190]].forEach(([k,ms,h])=>at(ms,()=>sampleRocket(W*k,H*R(.15,.35),h)));
+  at(600,()=>sampleRocket(W/2,H*.4,0,(x,y)=>{sampleBurst(x,y,45);textBurst(x,y)}));
+  at(3200,()=>{
     isIntroRunning = false;
     if(g)g.classList.add('on');
     if(bar)bar.classList.remove('dim');
@@ -618,7 +624,7 @@ function frame(now){
     P=P.filter(p=>{
       let a=1;
       if(p.m){
-        if(tt>4.6){p.m=0;p.g=140;p.vx=R(-40,40);p.vy=R(-60,20);p.life=p.max=R(.8,1.6)}
+        if(tt>2.6){p.m=0;p.g=140;p.vx=R(-40,40);p.vy=R(-60,20);p.life=p.max=R(.8,1.6)}
         else{
           p.vx+=((p.tx-p.x)*60-p.vx*9)*dtSec+R(-1,1);
           p.vy+=((p.ty-p.y)*60-p.vy*9)*dtSec+R(-1,1);
@@ -742,7 +748,7 @@ stage.addEventListener('click',(e)=>{
 /* font check & initial sequence start */
 Promise.race([
   document.fonts.load('800 80px "Baloo 2"'),
-  new Promise(r=>setTimeout(r,1200))
+  new Promise(r=>setTimeout(r,300))
 ]).then(async ()=>{
   await unlockAudio();
   if(audio && audio.state === 'running'){
@@ -752,6 +758,6 @@ Promise.race([
   } else {
     setTimeout(()=>{
       if(!hasIntroPlayedWithSound) show();
-    }, 1500);
+    }, 350);
   }
 });

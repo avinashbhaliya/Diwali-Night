@@ -242,7 +242,7 @@ let name=clean(new URLSearchParams(location.search).get('from'));
 const lines=()=>[(name||'Mara')+' taraf thi','Happy Diwali','Mara Kaleja'];
 const setGreet=()=>{
   const g1=$('#g1');if(g1)g1.textContent=lines()[0];
-  document.title=lines()[0]+' Happy Diwali';
+  document.title='Gaamda ni Diwali | Shubh Diwali, Bhai!';
 };
 
 /* particles & rockets from sample */
@@ -435,7 +435,7 @@ sync();
 
 if(wa)wa.onclick=()=>{
   const n=cur();if(!n)return;
-  window.open('https://wa.me/?text='+encodeURIComponent(n+' ni taraf thi tamne Happy Diwali! \u{1FA94} Aa link kholo ne fatakda fodo: '+link()),'_blank','noopener');
+  window.open('https://wa.me/?text='+encodeURIComponent(n+' ની તરફથી તમને Happy Diwali! \u{1FA94} આ લિંક ખોલો ને ફટાકડા ફોડો: '+link()),'_blank','noopener');
 };
 
 if(cp)cp.onclick=async()=>{
@@ -446,7 +446,7 @@ if(cp)cp.onclick=async()=>{
     try{document.execCommand('copy')}catch(_){}
     a.remove();
   }
-  introToast('Link copy thai gayi!');
+  introToast('લિંક કોપી થઈ ગઈ!');
 };
 
 if($('#pv'))$('#pv').onclick=()=>{
@@ -485,7 +485,7 @@ function navigate(){
     if(tor)tor.classList.add('intro-hidden');
     if(bar)bar.classList.add('intro-hidden');
   }
-  document.title=(nameRoute==='home'?lines()[0]+' Happy Diwali':nameRoute==='about'?'Amara Vishe | Gaamda ni Diwali':'Vaat Kari Lo | Gaamda ni Diwali');
+  document.title=(nameRoute==='home'?'Gaamda ni Diwali | Shubh Diwali, Bhai!':nameRoute==='about'?'Amara Vishe | Gaamda ni Diwali':'Vaat Kari Lo | Gaamda ni Diwali');
 }
 addEventListener('hashchange',navigate);navigate();
 

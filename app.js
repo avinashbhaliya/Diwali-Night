@@ -113,31 +113,35 @@ function unlockAudio(){
   return Promise.resolve();
 }
 
-// Global unlock listener attached to window
-const unlockAndPrime=()=>{
-  unlockAudio();
-  if(audio&&audio.state==='running'){
+let hasIntroPlayedWithSound = false;
+
+// Global unlock & play opening sequence on first user tap anywhere
+const firstUserInteraction = async () => {
+  await unlockAudio();
+  if (audio && audio.state === 'running') {
     hideSoundPrompt();
-    ['touchstart','touchend','pointerdown','mousedown','keydown','click'].forEach(e=>{
-      window.removeEventListener(e,unlockAndPrime);
+    if (!hasIntroPlayedWithSound) {
+      hasIntroPlayedWithSound = true;
+      show();
+    }
+    ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
+      window.removeEventListener(e, firstUserInteraction);
     });
   }
 };
-['touchstart','touchend','pointerdown','mousedown','keydown','click'].forEach(e=>{
-  window.addEventListener(e,unlockAndPrime,{passive:true});
+['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
+  window.addEventListener(e, firstUserInteraction, { passive: true });
 });
 
 // Dedicated sound prompt click
-const soundPromptBtn=document.querySelector('#sound-prompt');
-if(soundPromptBtn){
-  soundPromptBtn.onclick=async(e)=>{
+const soundPromptBtn = document.querySelector('#sound-prompt');
+if (soundPromptBtn) {
+  soundPromptBtn.onclick = async (e) => {
     e.stopPropagation();
     await unlockAudio();
     hideSoundPrompt();
-    if(sound){
-      soundEffect('rocket');
-      setTimeout(()=>soundEffect('burst'),300);
-    }
+    hasIntroPlayedWithSound = true;
+    show();
   };
 }
 
@@ -236,37 +240,40 @@ function tone(startHz,endHz,duration,volume,wave='sine'){
 function soundEffect(kind){
   if(!sound)return;
   if(kind==='sparkler'){
-    noise(3.2,5200,.28);
-    noise(3.1,2300,.12);
+    noise(3.2,4500,.45,'hiss');
+    noise(3.0,2400,.35,'hiss');
   }
   if(kind==='fountain'){
-    noise(3.5,1800,.42);
-    noise(3.4,4200,.18);
+    noise(3.5,2200,.55,'hiss');
+    noise(3.2,4800,.35,'hiss');
+    tone(300,750,3.2,.15,'triangle');
   }
   if(kind==='spinner'){
-    noise(3.2,2900,.32);
-    tone(540,1300,3.1,.06,'triangle');
+    noise(3.2,3200,.5,'hiss');
+    tone(650,1400,3.1,.18,'triangle');
   }
   if(kind==='rocket'||kind==='shell'){
-    noise(1.5,1800,.25);
-    tone(420,1700,1.45,.08);
+    tone(550,2400,1.25,.3,'sine');
+    tone(600,2600,1.2,.2,'triangle');
+    noise(1.3,2500,.45,'whistle');
   }
   if(kind==='burst'){
-    noise(.18,4800,.65,'boom');
-    noise(1.6,550,.75,'boom');
-    tone(140,32,.75,.45,'triangle');
-    noise(.9,3200,.18);
+    noise(.2,3600,.9,'boom');
+    noise(1.2,1200,.85,'boom');
+    tone(380,80,.8,.65,'triangle');
+    tone(180,45,1.0,.5,'sine');
+    noise(.9,2800,.35,'hiss');
   }
   if(kind==='bomb'){
-    noise(1.1,5600,.3,'hiss');
-    tone(650,1900,1.1,.05,'triangle');
+    noise(1.1,5200,.45,'hiss');
+    tone(750,2100,1.1,.15,'triangle');
     setTimeout(()=>{
       if(!sound)return;
-      noise(.3,5000,.95,'boom');
-      noise(2.5,420,1.0,'boom');
-      tone(170,24,1.4,.9,'triangle');
-      tone(85,18,1.6,.7,'sine');
-      noise(1.3,3400,.3);
+      noise(.35,3800,1.0,'boom');
+      noise(2.2,1100,1.0,'boom');
+      tone(420,60,1.3,.95,'triangle');
+      tone(160,30,1.5,.85,'sine');
+      noise(1.5,2600,.5,'hiss');
     },1100);
     audioUntil=Math.max(audioUntil,clock+3.5*60);
   }
@@ -709,4 +716,15 @@ stage.addEventListener('click',(e)=>{
 Promise.race([
   document.fonts.load('800 80px "Baloo 2"'),
   new Promise(r=>setTimeout(r,1200))
-]).then(show);
+]).then(async ()=>{
+  await unlockAudio();
+  if(audio && audio.state === 'running'){
+    hasIntroPlayedWithSound = true;
+    hideSoundPrompt();
+    show();
+  } else {
+    setTimeout(()=>{
+      if(!hasIntroPlayedWithSound) show();
+    }, 1500);
+  }
+});

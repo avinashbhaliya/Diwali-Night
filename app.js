@@ -81,6 +81,29 @@ function initAudioGraph(){
   }
 }
 
+const introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
+if (introAudio) {
+  introAudio.preload = 'auto';
+}
+
+function playIntroSound() {
+  if (!sound || !introAudio) return;
+  try {
+    introAudio.currentTime = 0;
+    const p = introAudio.play();
+    if (p && p.catch) p.catch(() => {});
+  } catch (_) {}
+}
+
+function stopIntroSound() {
+  if (introAudio) {
+    try {
+      introAudio.pause();
+      introAudio.currentTime = 0;
+    } catch (_) {}
+  }
+}
+
 function hideSoundPrompt(){
   const p=document.querySelector('#sound-prompt');
   if(p)p.classList.add('hidden');
@@ -101,6 +124,10 @@ function unlockAudio(){
       source.start(0);
     }catch(_){}
 
+    try{
+      if(introAudio && introAudio.load) introAudio.load();
+    }catch(_){}
+
     if(audio.state==='suspended'){
       return audio.resume().then(()=>{
         if(audio.state==='running')hideSoundPrompt();
@@ -118,16 +145,14 @@ let hasIntroPlayedWithSound = false;
 // Global unlock & play opening sequence on first user tap anywhere
 const firstUserInteraction = async () => {
   await unlockAudio();
-  if (audio && audio.state === 'running') {
-    hideSoundPrompt();
-    if (!hasIntroPlayedWithSound) {
-      hasIntroPlayedWithSound = true;
-      show();
-    }
-    ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
-      window.removeEventListener(e, firstUserInteraction);
-    });
+  hideSoundPrompt();
+  if (!hasIntroPlayedWithSound) {
+    hasIntroPlayedWithSound = true;
+    show();
   }
+  ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
+    window.removeEventListener(e, firstUserInteraction);
+  });
 };
 ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'].forEach(e => {
   window.addEventListener(e, firstUserInteraction, { passive: true });
@@ -339,6 +364,7 @@ document.querySelector('#sound').onclick=async e=>{
   b.setAttribute('aria-checked',String(sound));
   triggerToast(sound?'soundOn':'soundOff');
   await unlockAudio();
+  if(!sound) stopIntroSound();
   if(master&&audio)master.gain.setTargetAtTime(sound?.9:0,audio.currentTime,.025);
   if(sound){
     soundEffect('burst');
@@ -452,12 +478,10 @@ let P=[],RK=[],T=null,run=0;
 const hsl=h=>`hsl(${h},100%,62%)`;
 function sp(x,y,a,s,c,life,g,sz){P.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,c,life,max:life,g,sz,m:0})}
 function sampleBurst(x,y,h){
-  if(sound)soundEffect('burst');
   const n=mob?70:100;
   for(let i=0;i<n;i++)sp(x,y,R(0,6.283),R(40,230)*Math.sqrt(Math.random()),hsl(h+R(-15,15)),R(1,1.9),90,R(1.2,2.2));
 }
 function sampleRocket(x,ty,h,cb){
-  if(sound)soundEffect('rocket');
   let y=H-90;const vy=-R(560,680);
   RK.push(dt=>{
     y+=vy*dt;
@@ -525,6 +549,7 @@ function petalFrame(dt){
 function show(){
   unlockAudio().catch(()=>{});
   isIntroRunning = true;
+  playIntroSound();
   syncStage();
   const my=++run,g=$('#greet'),tor=$('#toran'),bar=$('#bar');
   P=[];RK=[];T=null;if(g)g.classList.remove('on');setGreet();
@@ -540,7 +565,7 @@ function show(){
   petals();
   [[.2,0,330],[.5,250,45],[.8,500,190]].forEach(([k,ms,h])=>at(ms,()=>sampleRocket(W*k,H*R(.15,.35),h)));
   at(1400,()=>sampleRocket(W/2,H*.4,0,(x,y)=>{sampleBurst(x,y,45);textBurst(x,y)}));
-  at(7500,()=>{
+  at(6800,()=>{
     isIntroRunning = false;
     if(g)g.classList.add('on');
     if(bar)bar.classList.remove('dim');
@@ -679,6 +704,7 @@ function navigate(){
     if(bar)bar.classList.remove('intro-hidden');
     if(g)g.classList.add('on');
   } else {
+    stopIntroSound();
     queue=[];effects=[];particles=[];flashes=[];audioUntil=0;
     P=[];RK=[];T=null;pOn=false;isIntroRunning=false;
     if(pc)pc.clearRect(0,0,W,H);
@@ -696,6 +722,7 @@ addEventListener('hashchange',navigate);navigate();
 document.addEventListener('visibilitychange',()=>{
   previous=0;
   if(document.hidden){
+    stopIntroSound();
     queue=[];effects=[];particles=[];flashes=[];audioUntil=0;
     stage.classList.remove('active');
     if(audio?.state==='running')audio.suspend();

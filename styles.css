@@ -358,6 +358,15 @@ body, button, input, select, textarea {
   display: none !important;
 }
 
+/* Night sky theme consistency */
+body, .app {
+  background: radial-gradient(ellipse at 50% 102%, #6c594023, transparent 46%), radial-gradient(ellipse at 15% 5%, #38404a22, transparent 65%), linear-gradient(#15171b, #1d1d23 70%, #29262a) !important;
+}
+.top {
+  background: rgba(21, 23, 27, 0.88) !important;
+  border-bottom: 1px solid rgba(255, 180, 50, 0.18) !important;
+}
+
 /* UI Transitions for Smooth Clearing & Restoring */
 .top, .sidebar, .share-bar, #greet, .festive-hands, .intro-toran, #toran {
   transition: transform 0.42s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.35s ease;
@@ -365,9 +374,7 @@ body, button, input, select, textarea {
 
 /* Cinema Mode (Clears entire screen during fireworks, preview & opening show) */
 .app.cinema-mode .top {
-  transform: translateY(-120%) !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+  display: none !important;
 }
 .app.cinema-mode .intro-toran,
 .app.cinema-mode #toran {

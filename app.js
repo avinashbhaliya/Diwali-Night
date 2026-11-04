@@ -75,14 +75,14 @@ async function unlockAudio(){
   }
 }
 
-// Audio unlock on first pointerdown or keydown
+// Audio unlock on load & first interaction
+unlockAudio().catch(()=>{});
+const audioUnlockEvents = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'];
 const audioUnlockOnce = async () => {
-  window.removeEventListener('pointerdown', audioUnlockOnce);
-  window.removeEventListener('keydown', audioUnlockOnce);
+  audioUnlockEvents.forEach(e => window.removeEventListener(e, audioUnlockOnce));
   await unlockAudio();
 };
-window.addEventListener('pointerdown', audioUnlockOnce, { passive: true });
-window.addEventListener('keydown', audioUnlockOnce, { passive: true });
+audioUnlockEvents.forEach(e => window.addEventListener(e, audioUnlockOnce, { passive: true }));
 
 function noise(duration=.5,frequency=1100,volume=.12,type='hiss'){
   if(!sound||!audio||audio.state!=='running'||!master)return;
@@ -307,12 +307,18 @@ let P=[],RK=[],T=null,run=0;
 const hsl=h=>`hsl(${h},100%,62%)`;
 function sp(x,y,a,s,c,life,g,sz){P.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,c,life,max:life,g,sz,m:0})}
 function sampleBurst(x,y,h){
-  if(sound&&audio&&audio.state==='running')soundEffect('burst');
+  if(sound){
+    if(!audio||audio.state!=='running')unlockAudio().then(()=>soundEffect('burst')).catch(()=>{});
+    else soundEffect('burst');
+  }
   const n=mob?70:100;
   for(let i=0;i<n;i++)sp(x,y,R(0,6.283),R(40,230)*Math.sqrt(Math.random()),hsl(h+R(-15,15)),R(1,1.9),90,R(1.2,2.2));
 }
 function sampleRocket(x,ty,h,cb){
-  if(sound&&audio&&audio.state==='running')soundEffect('rocket');
+  if(sound){
+    if(!audio||audio.state!=='running')unlockAudio().then(()=>soundEffect('rocket')).catch(()=>{});
+    else soundEffect('rocket');
+  }
   let y=H-90;const vy=-R(560,680);
   RK.push(dt=>{
     y+=vy*dt;
@@ -378,6 +384,7 @@ function petalFrame(dt){
 
 /* show sequence from sample */
 function show(){
+  unlockAudio().catch(()=>{});
   isIntroRunning = true;
   syncStage();
   const my=++run,g=$('#greet'),tor=$('#toran'),bar=$('#bar');

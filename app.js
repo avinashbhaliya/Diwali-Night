@@ -54,84 +54,219 @@ function introToast(m){
   toastTimer=setTimeout(()=>{el.classList.remove('show');toastTimer=null},2000);
 }
 
-async function unlockAudio(){
-  try{
-    audio=audio||new(window.AudioContext||window.webkitAudioContext)();
-    if(!master){
-      master=audio.createGain();
-      master.gain.value=sound?.8:0;
-      const limiter=audio.createDynamicsCompressor();
-      limiter.threshold.value=-12;
-      limiter.ratio.value=5;
-      master.connect(limiter);
-      limiter.connect(audio.destination);
-      noiseBuffer=audio.createBuffer(1,audio.sampleRate*2,audio.sampleRate);
-      const data=noiseBuffer.getChannelData(0);
-      for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
+function getAudioContext(){
+  if(!audio){
+    const AudioCtx=window.AudioContext||window.webkitAudioContext;
+    if(AudioCtx){
+      try{audio=new AudioCtx()}catch(_){}
     }
-    if(audio.state!=='running')await audio.resume();
-  }catch(error){
-    document.querySelector('.status').textContent='Aa browser ma aawaj nathi aavto, bhai!';
+  }
+  return audio;
+}
+
+function initAudioGraph(){
+  if(!audio)return;
+  if(!master){
+    try{
+      master=audio.createGain();
+      master.gain.value=sound?.9:0;
+      master.connect(audio.destination);
+    }catch(_){}
+    try{
+      const bufferSize=Math.max(22050,(audio.sampleRate||44100)*2);
+      noiseBuffer=audio.createBuffer(1,bufferSize,audio.sampleRate||44100);
+      const data=noiseBuffer.getChannelData(0);
+      for(let i=0;i<bufferSize;i++)data[i]=Math.random()*2-1;
+    }catch(_){}
   }
 }
 
-// Audio unlock on load & first interaction
-unlockAudio().catch(()=>{});
-const audioUnlockEvents = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'];
-const audioUnlockOnce = async () => {
-  audioUnlockEvents.forEach(e => window.removeEventListener(e, audioUnlockOnce));
-  await unlockAudio();
-};
-audioUnlockEvents.forEach(e => window.addEventListener(e, audioUnlockOnce, { passive: true }));
+function hideSoundPrompt(){
+  const p=document.querySelector('#sound-prompt');
+  if(p)p.classList.add('hidden');
+}
 
-function noise(duration=.5,frequency=1100,volume=.12,type='hiss'){
-  if(!sound||!audio||audio.state!=='running'||!master)return;
-  const t=audio.currentTime,src=audio.createBufferSource(),filter=audio.createBiquadFilter(),gain=audio.createGain();
-  src.buffer=noiseBuffer;src.loop=true;
-  filter.type=type==='boom'?'lowpass':'bandpass';
-  filter.frequency.setValueAtTime(frequency,t);
-  filter.Q.value=type==='whistle'?4:.7;
-  gain.gain.setValueAtTime(.001,t);
-  gain.gain.exponentialRampToValueAtTime(volume,t+.015);
-  if(type==='hiss'){for(let i=1;i<duration*12;i++)gain.gain.linearRampToValueAtTime(volume*(.65+Math.random()*.35),t+i/12)}
-  gain.gain.exponentialRampToValueAtTime(.001,t+duration);
-  src.connect(filter);filter.connect(gain);gain.connect(master);
-  src.start(t);src.stop(t+duration+.03);
-  src.onended=()=>{src.disconnect();filter.disconnect();gain.disconnect()};
-  audioUntil=Math.max(audioUntil,clock+duration*60);
+function unlockAudio(){
+  try{
+    getAudioContext();
+    if(!audio)return Promise.resolve();
+    initAudioGraph();
+
+    // Synchronous silent prime to satisfy iOS Safari WebKit
+    try{
+      const buffer=audio.createBuffer(1,1,22050);
+      const source=audio.createBufferSource();
+      source.buffer=buffer;
+      source.connect(audio.destination);
+      source.start(0);
+    }catch(_){}
+
+    if(audio.state==='suspended'){
+      return audio.resume().then(()=>{
+        if(audio.state==='running')hideSoundPrompt();
+      }).catch(()=>{});
+    }else if(audio.state==='running'){
+      hideSoundPrompt();
+      return Promise.resolve();
+    }
+  }catch(_){}
+  return Promise.resolve();
+}
+
+// Global unlock listener attached to window
+const unlockAndPrime=()=>{
+  unlockAudio();
+  if(audio&&audio.state==='running'){
+    hideSoundPrompt();
+    ['touchstart','touchend','pointerdown','mousedown','keydown','click'].forEach(e=>{
+      window.removeEventListener(e,unlockAndPrime);
+    });
+  }
+};
+['touchstart','touchend','pointerdown','mousedown','keydown','click'].forEach(e=>{
+  window.addEventListener(e,unlockAndPrime,{passive:true});
+});
+
+// Dedicated sound prompt click
+const soundPromptBtn=document.querySelector('#sound-prompt');
+if(soundPromptBtn){
+  soundPromptBtn.onclick=async(e)=>{
+    e.stopPropagation();
+    await unlockAudio();
+    hideSoundPrompt();
+    if(sound){
+      soundEffect('rocket');
+      setTimeout(()=>soundEffect('burst'),300);
+    }
+  };
+}
+
+// Initial silent unlock attempt (succeeds if browser allows autoplay)
+unlockAudio().catch(()=>{});
+
+function noise(duration=.5,frequency=1100,volume=.15,type='hiss'){
+  if(!sound)return;
+  try{
+    getAudioContext();
+    if(!audio)return;
+    initAudioGraph();
+    if(!noiseBuffer||!master)return;
+
+    if(audio.state==='suspended'){
+      audio.resume().catch(()=>{});
+    }
+
+    const t=audio.currentTime;
+    const src=audio.createBufferSource();
+    const filter=audio.createBiquadFilter();
+    const gain=audio.createGain();
+
+    src.buffer=noiseBuffer;
+    src.loop=true;
+
+    filter.type=(type==='boom')?'lowpass':'bandpass';
+    filter.frequency.setValueAtTime(Math.max(20,frequency),t);
+    filter.Q.value=(type==='whistle')?4:.7;
+
+    gain.gain.setValueAtTime(0.0001,t);
+    gain.gain.linearRampToValueAtTime(Math.max(0.0001,volume),t+0.02);
+
+    if(type==='hiss'){
+      const steps=Math.min(24,Math.floor(duration*12));
+      for(let i=1;i<steps;i++){
+        gain.gain.linearRampToValueAtTime(volume*(.65+Math.random()*.35),t+i/12);
+      }
+    }
+
+    gain.gain.linearRampToValueAtTime(0.0001,t+duration);
+
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(master);
+
+    src.start(t);
+    src.stop(t+duration+0.05);
+
+    src.onended=()=>{
+      try{src.disconnect();filter.disconnect();gain.disconnect()}catch(_){}
+    };
+
+    audioUntil=Math.max(audioUntil,clock+duration*60);
+  }catch(_){}
 }
 
 function tone(startHz,endHz,duration,volume,wave='sine'){
-  if(!sound||!audio||audio.state!=='running')return;
-  const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();
-  o.type=wave;
-  o.frequency.setValueAtTime(startHz,t);
-  o.frequency.exponentialRampToValueAtTime(endHz,t+duration);
-  g.gain.setValueAtTime(.001,t);
-  g.gain.exponentialRampToValueAtTime(volume,t+.015);
-  g.gain.exponentialRampToValueAtTime(.001,t+duration);
-  o.connect(g);g.connect(master);
-  o.start(t);o.stop(t+duration+.02);
-  o.onended=()=>{o.disconnect();g.disconnect()};
-  audioUntil=Math.max(audioUntil,clock+duration*60);
+  if(!sound)return;
+  try{
+    getAudioContext();
+    if(!audio)return;
+    initAudioGraph();
+    if(!master)return;
+
+    if(audio.state==='suspended'){
+      audio.resume().catch(()=>{});
+    }
+
+    const t=audio.currentTime;
+    const o=audio.createOscillator();
+    const g=audio.createGain();
+
+    o.type=wave;
+    o.frequency.setValueAtTime(Math.max(20,startHz),t);
+    o.frequency.linearRampToValueAtTime(Math.max(20,endHz),t+duration);
+
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.linearRampToValueAtTime(Math.max(0.0001,volume),t+0.02);
+    g.gain.linearRampToValueAtTime(0.0001,t+duration);
+
+    o.connect(g);
+    g.connect(master);
+
+    o.start(t);
+    o.stop(t+duration+0.05);
+
+    o.onended=()=>{
+      try{o.disconnect();g.disconnect()}catch(_){}
+    };
+
+    audioUntil=Math.max(audioUntil,clock+duration*60);
+  }catch(_){}
 }
 
 function soundEffect(kind){
-  if(kind==='sparkler'){noise(3.2,5200,.22);noise(3.1,2300,.08)}
-  if(kind==='fountain'){noise(3.5,1800,.36);noise(3.4,4200,.13)}
-  if(kind==='spinner'){noise(3.2,2900,.28);tone(540,1300,3.1,.035,'triangle')}
-  if(kind==='rocket'||kind==='shell'){noise(1.5,1800,.18);tone(420,1700,1.45,.065)}
-  if(kind==='burst'){noise(.13,4800,.5,'boom');noise(1.5,600,.6,'boom');tone(130,35,.7,.4);noise(.9,3200,.12)}
+  if(!sound)return;
+  if(kind==='sparkler'){
+    noise(3.2,5200,.28);
+    noise(3.1,2300,.12);
+  }
+  if(kind==='fountain'){
+    noise(3.5,1800,.42);
+    noise(3.4,4200,.18);
+  }
+  if(kind==='spinner'){
+    noise(3.2,2900,.32);
+    tone(540,1300,3.1,.06,'triangle');
+  }
+  if(kind==='rocket'||kind==='shell'){
+    noise(1.5,1800,.25);
+    tone(420,1700,1.45,.08);
+  }
+  if(kind==='burst'){
+    noise(.18,4800,.65,'boom');
+    noise(1.6,550,.75,'boom');
+    tone(140,32,.75,.45,'triangle');
+    noise(.9,3200,.18);
+  }
   if(kind==='bomb'){
-    noise(1.1,5600,.22);
-    tone(650,1900,1.1,.04,'triangle');
+    noise(1.1,5600,.3,'hiss');
+    tone(650,1900,1.1,.05,'triangle');
     setTimeout(()=>{
-      if(!sound||!audio||audio.state!=='running')return;
-      noise(.25,5200,.85,'boom');
-      noise(2.2,480,1.0,'boom');
-      tone(160,22,1.4,.85,'triangle');
-      tone(80,18,1.6,.65,'sine');
-      noise(1.2,3400,.25);
+      if(!sound)return;
+      noise(.3,5000,.95,'boom');
+      noise(2.5,420,1.0,'boom');
+      tone(170,24,1.4,.9,'triangle');
+      tone(85,18,1.6,.7,'sine');
+      noise(1.3,3400,.3);
     },1100);
     audioUntil=Math.max(audioUntil,clock+3.5*60);
   }
@@ -197,8 +332,11 @@ document.querySelector('#sound').onclick=async e=>{
   b.setAttribute('aria-checked',String(sound));
   triggerToast(sound?'soundOn':'soundOff');
   await unlockAudio();
-  if(master)master.gain.setTargetAtTime(sound?.8:0,audio.currentTime,.025);
-  if(sound){for(const e of effects)if(!e.done)soundEffect(e.kind)}else audioUntil=clock;
+  if(master&&audio)master.gain.setTargetAtTime(sound?.9:0,audio.currentTime,.025);
+  if(sound){
+    soundEffect('burst');
+    for(const e of effects)if(!e.done)soundEffect(e.kind);
+  }else audioUntil=clock;
   syncStage();
 };
 
@@ -307,18 +445,12 @@ let P=[],RK=[],T=null,run=0;
 const hsl=h=>`hsl(${h},100%,62%)`;
 function sp(x,y,a,s,c,life,g,sz){P.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,c,life,max:life,g,sz,m:0})}
 function sampleBurst(x,y,h){
-  if(sound){
-    if(!audio||audio.state!=='running')unlockAudio().then(()=>soundEffect('burst')).catch(()=>{});
-    else soundEffect('burst');
-  }
+  if(sound)soundEffect('burst');
   const n=mob?70:100;
   for(let i=0;i<n;i++)sp(x,y,R(0,6.283),R(40,230)*Math.sqrt(Math.random()),hsl(h+R(-15,15)),R(1,1.9),90,R(1.2,2.2));
 }
 function sampleRocket(x,ty,h,cb){
-  if(sound){
-    if(!audio||audio.state!=='running')unlockAudio().then(()=>soundEffect('rocket')).catch(()=>{});
-    else soundEffect('rocket');
-  }
+  if(sound)soundEffect('rocket');
   let y=H-90;const vy=-R(560,680);
   RK.push(dt=>{
     y+=vy*dt;

@@ -331,6 +331,8 @@ function effect(e,dt){
 const clean=s=>(s||'').replace(/\s+/g,' ').trim().replace(/[^\p{L}\p{M}\p{N} .,'-]/gu,'').slice(0,20).trim();
 let name=clean(new URLSearchParams(location.search).get('from'));
 const lines=()=>[(name||'મારા')+' તરફથી','હેપ્પી દિવાળી','મારા કલેજા'];
+const updateCoverTitle=()=>{const el=$('#cover-name-line');if(el)el.textContent=(name?name+' તરફથી ':'')+'તમારા માટે ખાસ દિવાળી ધમાકો!'};
+updateCoverTitle();
 const setGreet=()=>{
   const g1=$('#g1');if(g1)g1.textContent=lines()[0];
   document.title='Gaamda ni Diwali | Shubh Diwali, Bhai!';
@@ -608,11 +610,30 @@ stage.addEventListener('click',(e)=>{
   }
 });
 
-/* font check & initial sequence start */
+let coverDismissed = false;
+function triggerDhamakaFromCover(){
+  if(coverDismissed)return;
+  coverDismissed=true;
+  const cover=document.querySelector("#diwali-cover");
+  if(cover){
+    cover.classList.add("dismissed");
+    setTimeout(()=>{try{cover.remove()}catch(_){}},450);
+  }
+  playIntroSound();
+  unlockAudio().catch(()=>{});
+  show();
+}
+const coverEl=document.querySelector("#diwali-cover");
+if(coverEl){
+  coverEl.addEventListener("click",triggerDhamakaFromCover);
+  coverEl.addEventListener("touchstart",(e)=>{e.preventDefault();triggerDhamakaFromCover();},{passive:false});
+}
 Promise.race([
   Promise.all([
-    document.fonts.load('800 80px "Baloo Bhai 2"'),
-    document.fonts.load('800 80px "Baloo 2"')
+    document.fonts.load("800 80px Baloo Bhai 2"),
+    document.fonts.load("800 80px Baloo 2")
   ]),
   new Promise(r=>setTimeout(r,1200))
-]).then(show);
+]).then(()=>{
+  if(!document.querySelector("#diwali-cover"))show();
+});

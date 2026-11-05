@@ -323,7 +323,7 @@ function effect(e,dt){
 /* names */
 const clean=s=>(s||'').replace(/\s+/g,' ').trim().replace(/[^\p{L}\p{M}\p{N} .,'-]/gu,'').slice(0,20).trim();
 let name=clean(new URLSearchParams(location.search).get('from'));
-const lines=()=>[(name||'Mara')+' taraf thi','Happy Diwali','Mara Kaleja'];
+const lines=()=>[(name||'મારા')+' તરફથી','હેપ્પી દિવાળી','મારા કલેજા'];
 const setGreet=()=>{
   const g1=$('#g1');if(g1)g1.textContent=lines()[0];
   document.title='Gaamda ni Diwali | Shubh Diwali, Bhai!';
@@ -361,7 +361,7 @@ function textBurst(bx,by){
   const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'],oc=document.createElement('canvas');
   oc.width=iW;oc.height=iH;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
   let fs=mob?Math.min(iW/7.2,52):Math.min(iW/9,96);
-  const set=()=>o.font=`800 ${Math.round(fs)}px "Baloo 2",system-ui,sans-serif`;set();
+  const set=()=>o.font=`800 ${Math.round(fs)}px "Baloo Bhai 2","Baloo 2","Noto Sans Gujarati",system-ui,sans-serif`;set();
   const targetW=mob?iW*0.92:iW*0.85;
   const mw=Math.max(...L.map(t=>o.measureText(t).width));
   if(mw>targetW){fs*=targetW/mw;set();}
@@ -603,6 +603,9 @@ stage.addEventListener('click',(e)=>{
 
 /* font check & initial sequence start */
 Promise.race([
-  document.fonts.load('800 80px "Baloo 2"'),
+  Promise.all([
+    document.fonts.load('800 80px "Baloo Bhai 2"'),
+    document.fonts.load('800 80px "Baloo 2"')
+  ]),
   new Promise(r=>setTimeout(r,1200))
 ]).then(show);

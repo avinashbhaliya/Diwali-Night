@@ -2583,21 +2583,21 @@ textarea {
 
 #greet small {
   display: block;
-  font: 700 clamp(15px, 2.2vw, 20px) 'Baloo 2', sans-serif;
+  font: 700 clamp(15px, 2.2vw, 20px) 'Baloo Bhai 2', 'Baloo 2', 'Noto Sans Gujarati', sans-serif;
   color: #ffd9a0;
   margin-bottom: 2px;
 }
 
 #greet h1 {
   margin: 2px 0;
-  font: 800 clamp(38px, 6.5vw, 84px)/1.05 'Baloo 2', sans-serif;
+  font: 800 clamp(38px, 6.5vw, 84px)/1.05 'Baloo Bhai 2', 'Baloo 2', 'Noto Sans Gujarati', sans-serif;
   color: #ffc23d;
   text-shadow: 0 0 40px #ff7a0066;
 }
 
 #greet p {
   margin: 0;
-  font: 500 clamp(14px, 2.2vw, 20px) 'Poppins', sans-serif;
+  font: 600 clamp(14px, 2.2vw, 20px) 'Baloo Bhai 2', 'Poppins', 'Noto Sans Gujarati', sans-serif;
   color: #d8f58b;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }

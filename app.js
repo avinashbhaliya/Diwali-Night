@@ -361,20 +361,12 @@ function textBurst(bx,by){
   const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'],oc=document.createElement('canvas');
   oc.width=iW;oc.height=iH;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
   let fs=mob?Math.min(iW/7.2,52):Math.min(iW/9,96);
-  const set=()=>o.font=`800 ${Math.round(fs)}px "Baloo Bhai 2","Baloo 2","Noto Sans Gujarati",system-ui,sans-serif`;set();
+  const set=()=>o.font=`800 ${Math.round(fs)}px "Baloo 2",system-ui,sans-serif`;set();
   const targetW=mob?iW*0.92:iW*0.85;
   const mw=Math.max(...L.map(t=>o.measureText(t).width));
   if(mw>targetW){fs*=targetW/mw;set();}
   const cy=iH*0.40,gap=fs*1.22;
-  const strokeW=Math.max(2,fs*0.055);
-  o.lineWidth=strokeW;
-  o.lineJoin='round';
-  L.forEach((t,i)=>{
-    o.strokeStyle=cols[i];
-    o.strokeText(t,iW/2,cy+(i-1)*gap);
-    o.fillStyle=cols[i];
-    o.fillText(t,iW/2,cy+(i-1)*gap);
-  });
+  L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*gap);});
   const d=o.getImageData(0,0,iW,iH).data;
   let step=mob?3:4,pts;
   for(;;){
@@ -382,15 +374,15 @@ function textBurst(bx,by){
     for(let y=0;y<iH;y+=step){
       for(let x=0;x<iW;x+=step){
         const k=(y*iW+x)*4;
-        if(d[k+3]>50)pts.push([x,y,d[k],d[k+1],d[k+2]]);
+        if(d[k+3]>120)pts.push([x,y,d[k],d[k+1],d[k+2]]);
       }
     }
-    if(pts.length<=(mob?1600:2200)||step>=6)break;
+    if(pts.length<=(mob?1300:1800)||step>=6)break;
     step++;
   }
   pts.forEach(([x,y,r,g,b])=>{
     const a=R(0,6.283),s=R(60,260);
-    P.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,tx:x,ty:y,c:`rgb(${r},${g},${b})`,life:99,max:99,g:0,sz:mob?R(2.4,3.3):R(1.9,2.8),m:1,ph:R(0,6.283)});
+    P.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,tx:x,ty:y,c:`rgb(${r},${g},${b})`,life:99,max:99,g:0,sz:mob?R(1.7,2.5):R(1.3,2.1),m:1,ph:R(0,6.283)});
   });
   T=performance.now()/1000;
   syncStage();
@@ -611,9 +603,6 @@ stage.addEventListener('click',(e)=>{
 
 /* font check & initial sequence start */
 Promise.race([
-  Promise.all([
-    document.fonts.load('800 80px "Baloo Bhai 2"'),
-    document.fonts.load('800 80px "Baloo 2"')
-  ]),
+  document.fonts.load('800 80px "Baloo 2"'),
   new Promise(r=>setTimeout(r,1200))
 ]).then(show);

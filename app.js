@@ -70,6 +70,13 @@ async function unlockAudio(){
       for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
     }
     if(audio.state!=='running')await audio.resume();
+    if(audio.state==='running'){
+      const ping=audio.createBuffer(1,1,22050);
+      const src=audio.createBufferSource();
+      src.buffer=ping;
+      src.connect(audio.destination);
+      src.start(0);
+    }
   }catch(error){
 
   }
@@ -535,7 +542,7 @@ if(cp)cp.onclick=async()=>{
   if(!cur())return;
   try{await navigator.clipboard.writeText(link())}catch(e){
     const a=document.createElement('textarea');a.value=link();
-    document.body.appendChild(a);a.select();
+    a.style.position='fixed';a.style.opacity='0';a.setAttribute('readonly','');document.body.appendChild(a);a.select();a.setSelectionRange(0,99999);
     try{document.execCommand('copy')}catch(_){}
     a.remove();
   }

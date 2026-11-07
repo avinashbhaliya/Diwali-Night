@@ -89,8 +89,11 @@ unlockAudio().catch(()=>{});
 const audioUnlockEvents = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'];
 const audioUnlockOnce = async () => {
   audioUnlockEvents.forEach(e => window.removeEventListener(e, audioUnlockOnce));
-  
   await unlockAudio();
+  // iOS: if intro animation is running when user first taps, play a burst
+  if(isIntroRunning && sound && audio && audio.state==='running'){
+    soundEffect('burst');
+  }
 };
 audioUnlockEvents.forEach(e => window.addEventListener(e, audioUnlockOnce, { passive: true }));
 
@@ -609,5 +612,5 @@ Promise.race([
     document.fonts.load('800 80px "Baloo 2"'),
     document.fonts.load('900 80px "Noto Sans Gujarati"')
   ]),
-  new Promise(r=>setTimeout(r,1500))
-]).then(show);
+  new Promise(r=>setTimeout(r,2500))
+]).then(()=>requestAnimationFrame(show));

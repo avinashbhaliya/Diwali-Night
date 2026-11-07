@@ -20,7 +20,6 @@ new ResizeObserver(resize).observe(stage);resize();
 let master,noiseBuffer,queue=[],clock=0,audioUntil=0;const sprites=new Map();
 
 const toastMessages={
-  special:["😂 અરે વાહ! આ તો દેશી સ્પેશિયલ ધમાકો!","સાંભળો સાંભળો, અસલી ગામઠી મોજ!"],
   sparkler:["હાથ દૂર રાખજો!","આ તો નાનો ધમાકો છે"],
   fountain:["દૂર ઊભા રહો, અનાર આવે છે!","કાકાની દુકાન જેવો સ્પાર્કલ"],
   spinner:["ચકરીને ચક્કર આવે છે","ગોળ ગોળ રાણી"],
@@ -193,21 +192,6 @@ function projectile(kind,offset=0){
 
 function launch(kind){
   stage.classList.add('active');const x=W/2,y=H-55;
-  if(kind==='special'){
-    // 5-6 sec desi firecracker sequence — WebAudio only
-    soundEffect('burst'); soundEffect('rocket');
-    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('bomb'); soundEffect('burst'); },800);
-    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('burst'); soundEffect('shell'); },1800);
-    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('bomb'); },3000);
-    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('burst'); soundEffect('burst'); },4200);
-    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('bomb'); soundEffect('burst'); },5400);
-    projectile('shell',-Math.min(100,W*.15));
-    schedule('rocket',20,Math.min(100,W*.15));
-    schedule('shell',45,0);
-    schedule('bomb',70);
-    stage.classList.add('shake');
-    setTimeout(()=>stage.classList.remove('shake'),500);
-  }
   if(kind==='sparkler'){effects.push({kind,x,y:y-105,t:0,d:190});soundEffect(kind)}
   if(kind==='fountain'){effects.push({kind,x,y,t:0,d:210});soundEffect(kind)}
   if(kind==='spinner'){effects.push({kind,x,y,t:0,d:190});soundEffect(kind)}
@@ -227,7 +211,7 @@ document.querySelectorAll('.cards').forEach(container=>{
     launch(card.dataset.kind);
   });
 });
-document.querySelector('#all').onclick=async()=>{await unlockAudio();triggerToast('all');queue=[];['special','sparkler','fountain','spinner','bomb','rocket','firework'].forEach((kind,i)=>schedule(kind,i*145))};
+document.querySelector('#all').onclick=async()=>{await unlockAudio();triggerToast('all');queue=[];['sparkler','fountain','spinner','bomb','rocket','firework'].forEach((kind,i)=>schedule(kind,i*145))};
 document.querySelector('#sound').onclick=async e=>{
   const b=e.currentTarget;sound=!sound;
   b.querySelector('.sound-label').textContent=sound?'ધમાકો ચાલુ':'ધમાકો બંધ';
@@ -370,14 +354,18 @@ function sampleRocket(x,ty,h,cb){
 }
 
 function textBurst(bx,by){
-  const iW=Math.round(W),iH=Math.round(H);
+  // On iOS, W from getBoundingClientRect can lag; use innerWidth as safeguard
+  const iW=Math.round(Math.min(W,window.innerWidth||W)),iH=Math.round(H);
   const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'],oc=document.createElement('canvas');
   oc.width=iW;oc.height=iH;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
-  let fs=mob?Math.min(iW/7.2,52):Math.min(iW/9,96);
+  let fs=mob?Math.min(iW/9.5,38):Math.min(iW/9,88);
   const set=()=>o.font=`800 ${Math.round(fs)}px "Noto Sans Gujarati","Baloo Bhai 2","Baloo 2",system-ui,sans-serif`;set();
-  const targetW=mob?iW*0.92:iW*0.85;
+  const targetW=mob?iW*0.75:iW*0.82;
   const mw=Math.max(...L.map(t=>o.measureText(t).width));
   if(mw>targetW){fs*=targetW/mw;set();}
+  // Extra safety pass for Gujarati wide chars
+  const mw2=Math.max(...L.map(t=>o.measureText(t).width));
+  if(mw2>targetW){fs*=(targetW/mw2)*0.95;set();}
   const cy=iH*0.40,gap=fs*1.22;
   L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*gap);});
   const d=o.getImageData(0,0,iW,iH).data;

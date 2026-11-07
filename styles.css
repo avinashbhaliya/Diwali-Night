@@ -3178,3 +3178,18 @@ body,
     padding: 0 16px;
   }
 }
+
+
+/* Make all cards look clickable (image, text, button) */
+.card {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.card:active {
+  transform: scale(0.97);
+}
+.card img, .card h3 {
+  cursor: pointer;
+  pointer-events: auto;
+}

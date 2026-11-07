@@ -217,7 +217,16 @@ function launch(kind){
   syncStage();
 }
 
-document.querySelectorAll('[data-kind]').forEach(b=>b.onclick=async()=>{await unlockAudio();triggerToast(b.dataset.kind);launch(b.dataset.kind)});
+// Card click: entire card (img, title, button) triggers firework
+document.querySelectorAll('.cards').forEach(container=>{
+  container.addEventListener('click',async e=>{
+    const card=e.target.closest('[data-kind]');
+    if(!card)return;
+    await unlockAudio();
+    triggerToast(card.dataset.kind);
+    launch(card.dataset.kind);
+  });
+});
 document.querySelector('#all').onclick=async()=>{await unlockAudio();triggerToast('all');queue=[];['special','sparkler','fountain','spinner','bomb','rocket','firework'].forEach((kind,i)=>schedule(kind,i*145))};
 document.querySelector('#sound').onclick=async e=>{
   const b=e.currentTarget;sound=!sound;

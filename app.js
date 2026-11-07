@@ -393,6 +393,15 @@ function textBurst(bx,by){
   T=performance.now()/1000;
   syncStage();
 }
+
+/* petals from sample */
+let pet=[],pOn=false,p0=0;
+function petals(){
+  const n=mob?60:120,cs=['#ff9a1f','#ffb020','#ffd23f','#ff7a00','#ff6aa8'];
+  pet=[];
+  for(let i=0;i<n;i++)pet.push({t:R(0,5),x:R(0,W),y:-20,vy:R(50,110),sw:R(20,50),ph:R(0,6.283),f:R(.8,1.6),rot:R(0,6.283),vr:R(-1.5,1.5),s:R(5,11),c:cs[(Math.random()*cs.length)|0]});
+  p0=performance.now()/1000;pOn=true;
+}
 function petalFrame(dt){
   if(!pc)return;
   const e=performance.now()/1000-p0;pc.clearRect(0,0,W,H);let alive=false;

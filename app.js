@@ -354,46 +354,79 @@ function sampleRocket(x,ty,h,cb){
 }
 
 function textBurst(bx,by){
-  // Live stage width — never use stale W on iOS
+  // Live stage width — guards against stale W on iOS
   const liveR=stage.getBoundingClientRect();
   const iW=Math.round(liveR.width||W),iH=Math.round(liveR.height||H);
   const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'];
-  // Start conservative: Gujarati matras extend beyond measureText bounds on iOS
-  let fs=mob?Math.min(iW/13,26):Math.min(iW/9,88);
+  // Start at good visible size, slightly smaller than original for iPhone safety
+  let fs=mob?Math.min(iW/8,44):Math.min(iW/9,88);
   const oc=document.createElement('canvas');
   oc.width=iW;oc.height=iH;
   const o=oc.getContext('2d');
-  o.textAlign='center';o.textBaseline='middle';
-  const setF=()=>{o.font='800 '+Math.round(fs)+'px "Noto Sans Gujarati","Baloo Bhai 2","Baloo 2",sans-serif';};
+  o.textBaseline='middle';
+  // Use 'left' align for explicit manual centering (iOS 'center' is unreliable with Gujarati)
+  o.textAlign='left';
+  const setF=()=>{o.font='800 '+Math.round(fs)+'px "Baloo Bhai 2","Noto Sans Gujarati","Baloo 2",sans-serif';};
   setF();
-  // Max allowed pixel width: 50% of stage on mobile (safe for any Gujarati word)
-  const maxW=mob?iW*0.50:iW*0.78;
-  const cy=iH*0.42,gap=()=>Math.round(fs*1.28);
-  // Pixel-scan loop: draw → measure real pixel extent → scale if too wide
-  for(let attempt=0;attempt<6;attempt++){
-    o.clearRect(0,0,iW,iH);
+  // 70% of stage width (comfortable margin for Gujarati matras)
+  const maxW=mob?iW*0.70:iW*0.80;
+  const cy=iH*0.42;
+  const gap=()=>Math.round(fs*1.26);
+  // Helper: draw all 3 lines manually centered using measureText
+  const drawLines=(xOff)=>{
     const g=gap();
-    L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*g);});
-    // Find actual rightmost and leftmost non-transparent pixel
-    const pd=o.getImageData(0,0,iW,iH).data;
-    let minX=iW,maxX=0;
-    for(let py=0;py<iH;py+=2){
-      for(let px=0;px<iW;px++){
-        if(pd[(py*iW+px)*4+3]>60){
-          if(px<minX)minX=px;
-          if(px>maxX)maxX=px;
-        }
+    L.forEach((t,i)=>{
+      const tw=o.measureText(t).width;
+      o.fillStyle=cols[i];
+      // xOff=0 -> center at iW/2, negative -> shift left, positive -> shift right
+      o.fillText(t,(iW-tw)/2+xOff,cy+(i-1)*g);
+    });
+  };
+  // Step 1: Scale font so measureText-based width fits in maxW
+  for(let pass=0;pass<5;pass++){
+    const mw=Math.max(...L.map(t=>o.measureText(t).width));
+    if(mw<=maxW)break;
+    fs*=(maxW/mw)*0.90;setF();
+  }
+  // Step 2: Draw with offset=0, scan REAL pixel bounds to fix centering
+  o.clearRect(0,0,iW,iH);
+  drawLines(0);
+  const pd1=o.getImageData(0,0,iW,iH).data;
+  let minX=iW,maxX=0;
+  for(let py=0;py<iH;py+=2){
+    for(let px=0;px<iW;px++){
+      if(pd1[(py*iW+px)*4+3]>60){
+        if(px<minX)minX=px;
+        if(px>maxX)maxX=px;
       }
     }
-    const actualW=maxX-minX;
-    if(actualW<=maxW||fs<=12)break;
-    fs*=(maxW/actualW)*0.88;
-    setF();
   }
-  // Final draw with verified font size
+  const actualW=maxX-minX;
+  // Step 3: If still too wide after measureText scaling, do pixel-based scale
+  if(actualW>maxW&&actualW>0){
+    fs*=(maxW/actualW)*0.88;setF();
+  }
+  // Step 4: Calculate centering correction offset
+  // Find actual pixel center of text, correct if off from iW/2
   o.clearRect(0,0,iW,iH);
-  const g=gap();
-  L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*g);});
+  drawLines(0);
+  const pd2=o.getImageData(0,0,iW,iH).data;
+  let mn2=iW,mx2=0;
+  for(let py=0;py<iH;py+=2){
+    for(let px=0;px<iW;px++){
+      if(pd2[(py*iW+px)*4+3]>60){
+        if(px<mn2)mn2=px;
+        if(px>mx2)mx2=px;
+      }
+    }
+  }
+  // Centering correction: shift so pixel center aligns with iW/2
+  const pixelCenter=(mn2+mx2)/2;
+  const correction=iW/2-pixelCenter;
+  // Step 5: Final draw with centering correction applied
+  o.clearRect(0,0,iW,iH);
+  drawLines(correction);
+  // Step 6: Collect particle positions from final pixel data
   const d=o.getImageData(0,0,iW,iH).data;
   let step=mob?3:4,pts;
   for(;;){

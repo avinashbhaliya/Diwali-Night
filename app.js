@@ -354,19 +354,23 @@ function sampleRocket(x,ty,h,cb){
 }
 
 function textBurst(bx,by){
-  // On iOS, W from getBoundingClientRect can lag; use innerWidth as safeguard
-  const iW=Math.round(Math.min(W,window.innerWidth||W)),iH=Math.round(H);
+  // Always use live stage dimensions — iOS getBoundingClientRect can lag
+  const liveR=stage.getBoundingClientRect();
+  const iW=Math.round(liveR.width||W),iH=Math.round(liveR.height||H);
   const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'],oc=document.createElement('canvas');
   oc.width=iW;oc.height=iH;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
-  let fs=mob?Math.min(iW/9.5,38):Math.min(iW/9,88);
+  // Gujarati glyphs are wider than Latin — start smaller and scale down aggressively
+  let fs=mob?Math.min(iW/11,32):Math.min(iW/9,88);
   const set=()=>o.font=`800 ${Math.round(fs)}px "Noto Sans Gujarati","Baloo Bhai 2","Baloo 2",system-ui,sans-serif`;set();
-  const targetW=mob?iW*0.75:iW*0.82;
-  const mw=Math.max(...L.map(t=>o.measureText(t).width));
-  if(mw>targetW){fs*=targetW/mw;set();}
-  // Extra safety pass for Gujarati wide chars
-  const mw2=Math.max(...L.map(t=>o.measureText(t).width));
-  if(mw2>targetW){fs*=(targetW/mw2)*0.95;set();}
-  const cy=iH*0.40,gap=fs*1.22;
+  // 60% of stage width for Gujarati (glyphs wider than measured due to matras/conjuncts)
+  const targetW=mob?iW*0.60:iW*0.78;
+  // Multiple passes to ensure text fits
+  for(let pass=0;pass<4;pass++){
+    const mw=Math.max(...L.map(t=>o.measureText(t).width));
+    if(mw<=targetW)break;
+    fs*=(targetW/mw)*0.92;set();
+  }
+  const cy=iH*0.42,gap=Math.round(fs*1.28);
   L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*gap);});
   const d=o.getImageData(0,0,iW,iH).data;
   let step=mob?3:4,pts;
@@ -375,7 +379,8 @@ function textBurst(bx,by){
     for(let y=0;y<iH;y+=step){
       for(let x=0;x<iW;x+=step){
         const k=(y*iW+x)*4;
-        if(d[k+3]>120)pts.push([x,y,d[k],d[k+1],d[k+2]]);
+        // Only keep particles that are within safe stage bounds (clip at 98% width)
+        if(d[k+3]>120&&x>=2&&x<iW-2)pts.push([x,y,d[k],d[k+1],d[k+2]]);
       }
     }
     if(pts.length<=(mob?1300:1800)||step>=6)break;
@@ -387,15 +392,6 @@ function textBurst(bx,by){
   });
   T=performance.now()/1000;
   syncStage();
-}
-
-/* petals from sample */
-let pet=[],pOn=false,p0=0;
-function petals(){
-  const n=mob?60:120,cs=['#ff9a1f','#ffb020','#ffd23f','#ff7a00','#ff6aa8'];
-  pet=[];
-  for(let i=0;i<n;i++)pet.push({t:R(0,5),x:R(0,W),y:-20,vy:R(50,110),sw:R(20,50),ph:R(0,6.283),f:R(.8,1.6),rot:R(0,6.283),vr:R(-1.5,1.5),s:R(5,11),c:cs[(Math.random()*cs.length)|0]});
-  p0=performance.now()/1000;pOn=true;
 }
 function petalFrame(dt){
   if(!pc)return;

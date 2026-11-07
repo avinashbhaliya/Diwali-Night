@@ -1,20 +1,20 @@
 <!doctype html>
-<html lang="gu-Latn">
+<html lang="gu">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Gaamda ni Diwali">
+  <meta name="apple-mobile-web-app-title" content="ગામડાની દિવાળી">
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#101d18">
-  <title>Gaamda ni Diwali | Shubh Diwali, Bhai!</title>
+  <title>ગામડાની દિવાળી | શુભ દિવાળી, ભાઈ!</title>
   <meta name="description"
-    content="Gaamda ni Diwali screen par! Phuljhadi, Anar, Chakri, Rocket ne Aatishbaji fodo. Banavnar: @gaamda_no_engineer (Avinash Bhaliya).">
-  <meta property="og:title" content="Gaamda ni Diwali">
+    content="ગામડાની દિવાળી સ્ક્રીન પર! ફૂલઝડી, કોઠી, ચકરી, રોકેટ, સુતળી બોમ્બ અને આતિશબાજી ફોડો. બનાવનાર: @gaamda_no_engineer (અવિનાશ ભાલીયા).">
+  <meta property="og:title" content="ગામડાની દિવાળી">
   <meta property="og:description"
-    content="Faaltu ni vaat chhodo, fatakda fodo! Desi Diwali dhamaka with @gaamda_no_engineer.">
+    content="ફાલતુની વાત છોડો, ફટાકડા ફોડો! દેશી દિવાળી ધમાકો with @gaamda_no_engineer.">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,86 +26,72 @@
 
 <body>
   <div class="app">
-    <!-- Festive Diwali Cover Overlay for 1-Tap Dhamaka & 100% Guaranteed Sound -->
-    <div class="diwali-cover" id="diwali-cover" role="button" tabindex="0" aria-label="ધમાકો ફોડવા ટચ કરો">
-      <div class="cover-card">
-        <div class="cover-diya-wrap">
-          <div class="cover-glow-halo"></div>
-          <div class="cover-diya">🪔</div>
-        </div>
-        <div class="cover-badge">✨ દિવાળી સરપ્રાઇઝ ✨</div>
-        <h1 class="cover-heading" id="cover-heading">
-          <span class="cover-name-line" id="cover-name-line">તમારા માટે ખાસ દિવાળી ધમાકો!</span>
-        </h1>
-        <div class="cover-tap-prompt">
-          <span class="cover-pulse-icon">💥</span>
-          <span class="cover-tap-text">👉 ફોડવા માટે સ્ક્રીન પર ટચ કરો 💥</span>
-        </div>
-        <div class="cover-sound-badge">
-          <span>🔊 અવાજ સાથે ફૂટશે</span>
-        </div>
-      </div>
-    </div>
-
     <header class="top">
-      <div class="brand">Gaamda ni Diwali</div>
-      <nav aria-label="Main Navigation">
-        <a href="#home" class="nav-link active" aria-current="page">Ghar</a>
-        <a href="#about" class="nav-link">Amara Vishe</a>
-        <a href="#contact" class="nav-link">Vaat Kari Lo</a>
+      <div class="brand">ગામડાની દિવાળી</div>
+      <nav aria-label="મુખ્ય નેવિગેશન">
+        <a href="#home" class="nav-link active" aria-current="page">ઘર</a>
+        <a href="#about" class="nav-link">અમારા વિશે</a>
+        <a href="#contact" class="nav-link">વાત કરી લો</a>
       </nav>
-      <button class="sound" id="sound" role="switch" aria-checked="true" aria-label="Dhamako Sound">
-        <span class="sound-label">Dhamako ON</span>
+      <button class="sound" id="sound" role="switch" aria-checked="true" aria-label="ધમાકો અવાજ">
+        <span class="sound-label">ધમાકો ચાલુ</span>
         <span class="toggle-track" aria-hidden="true"><span class="toggle-knob"></span></span>
       </button>
     </header>
 
     <div class="body" id="home" data-page>
       <aside class="sidebar">
-        <h2 class="side-title">Kayo fatakdo foduu?</h2>
-        <p class="side-note">Tap karo ne aakash ma ujas karo</p>
-        <button class="all" id="all">Badha ek saathe fodo!</button>
+        <h2 class="side-title">કયો ફટાકડો ફોડવો છે?</h2>
+        <p class="side-note">ટચ કરો ને આકાશમાં અજવાળું કરો</p>
+        <button class="all" id="all">બધા એકસાથે ફોડો! 💥</button>
         <div class="cards" style="margin-top:16px">
-          <article class="card">
-            <img src="sparkler.webp" alt="Phuljhadi">
+          <article class="card card-special">
+            <img src="firework.webp" alt="સ્પેશિયલ ફટાકડો">
             <div class="card-info">
-              <h3>Phuljhadi</h3>
-              <button data-kind="sparkler">Chaalu karo</button>
+              <h3>સ્પેશિયલ ફટાકડો</h3>
+              <button data-kind="special">સ્પેશિયલ ફોડો 🎵</button>
             </div>
           </article>
           <article class="card">
-            <img src="fountain.webp" alt="Anar">
+            <img src="sparkler.webp" alt="ફૂલઝડી">
             <div class="card-info">
-              <h3>Anar</h3>
-              <button data-kind="fountain">Dadam fodo</button>
+              <h3>ફૂલઝડી</h3>
+              <button data-kind="sparkler">ચાલુ કરો</button>
             </div>
           </article>
           <article class="card">
-            <img src="spinner.webp" alt="Chakri">
+            <img src="fountain.webp" alt="કોઠી (અનાર)">
             <div class="card-info">
-              <h3>Chakri</h3>
-              <button data-kind="spinner">Gol gol feravo</button>
+              <h3>કોઠી (અનાર)</h3>
+              <button data-kind="fountain">દાડમ ફોડો</button>
             </div>
           </article>
           <article class="card">
-            <img src="bomb.webp" alt="Sutali Bomb">
+            <img src="spinner.webp" alt="ચકરી">
             <div class="card-info">
-              <h3>Sutali Bomb</h3>
-              <button data-kind="bomb">Dhamako karo</button>
+              <h3>ચકરી</h3>
+              <button data-kind="spinner">ગોળ ગોળ ફેરવો</button>
             </div>
           </article>
           <article class="card">
-            <img src="rocket.webp" alt="Rocket">
+            <img src="bomb.webp" alt="સુતળી બોમ્બ">
             <div class="card-info">
-              <h3>Rocket</h3>
-              <button data-kind="rocket">Chandra par moklo</button>
+              <h3>સુતળી બોમ્બ</h3>
+              <button data-kind="bomb">ધમાકો કરો</button>
             </div>
           </article>
           <article class="card">
-            <img src="firework.webp" alt="Aatishbaji">
+            <img src="rocket.webp" alt="રોકેટ">
             <div class="card-info">
-              <h3>Aatishbaji</h3>
-              <button data-kind="firework">Aakash faad do</button>
+              <h3>રોકેટ</h3>
+              <button data-kind="rocket">આકાશમાં મોકલો</button>
+            </div>
+          </article>
+          <article class="card">
+            <img src="firework.webp" alt="આતિશબાજી">
+            <div class="card-info">
+              <h3>આતિશબાજી</h3>
+              <button data-kind="firework">આકાશ ગજવો</button>
             </div>
           </article>
         </div>
@@ -117,7 +103,7 @@
         <div class="toran intro-toran" id="toran" aria-hidden="true"></div>
         <div class="greeting" id="greet">
           <small id="g1"></small>
-          <h1>હેપ્પી દિવાળી, <em>કલેજા!</em></h1>
+          <h1>શુભ દિવાળી, <em>કલેજા!</em></h1>
           <p>ફાલતુની વાત છોડો, ફટાકડા ફોડો</p>
         </div>
         <div class="festive-hands" aria-hidden="true">
@@ -132,7 +118,7 @@
         <div class="bar share-bar" id="bar">
           <label for="nm" class="share-label">તમારા નામથી બનાવીને શેર કરો</label>
           <div class="row share-row">
-            <input id="nm" class="share-input" maxlength="20" placeholder="તમારું નામ એન્ટર કરો" autocomplete="off" spellcheck="false">
+            <input id="nm" class="share-input" maxlength="20" placeholder="તમારું નામ લખો" autocomplete="off" spellcheck="false">
             <button type="button" id="wa" class="share-btn share-btn-wa" disabled>WhatsApp પર મોકલો</button>
             <button type="button" id="cp" class="share-btn share-btn-ghost" disabled>લિંક કોપી કરો</button>
             <button type="button" id="pv" class="share-btn share-btn-ghost">પ્રિવ્યૂ જુઓ</button>
@@ -144,55 +130,55 @@
 
     <section id="about" class="info-page" data-page hidden>
       <div class="info-wrap">
-        <p class="kicker">Gaam ni Diwali, Screen par</p>
-        <h1>Thodo ujas,<br>ghano <em>dhamal.</em></h1>
-        <p class="intro">Gaamda ni Diwali ma je maja aave e biji kyay na male! Ek haath ma phuljhadi, aakash ma rocket,
-          ne padosi na ghar ma dhuando. Aavya cho to jami ne jaajo ne screen par full fatakda fodo!</p>
+        <p class="kicker">ગામની દિવાળી, સ્ક્રીન પર</p>
+        <h1>થોડો ઉજાસ,<br>ઘણો <em>ધમાલ.</em></h1>
+        <p class="intro">ગામડાની દિવાળીમાં જે મજા આવે એ બીજી ક્યાંય ન મળે! એક હાથમાં ફૂલઝડી, આકાશમાં રોકેટ,
+          ને પડોશીના ઘરમાં ધુમાડો. આવ્યા છો તો જમીને જાજો ને સ્ક્રીન પર ફુલ ફટાકડા ફોડો!</p>
         <div class="about-grid">
           <div class="about-copy">
-            <h2>Khedut Putra no Desi Jugaad</h2>
-            <p>Aapde gaamda na maanas, tame ne hu badha bhega mali ne aakash roshan karie. Tamaro gamto fatakdo tap karo
-              ne bindaas dhamako karo!</p>
-            <p>Banavnar: <strong>Avinash Bhaliya</strong> (<a href="https://www.instagram.com/gaamda_no_engineer/"
-                target="_blank" rel="noopener noreferrer">@gaamda_no_engineer</a>) — Talaja, Bhavnagar no software
-              engineer ne khedut putra! Instagram par follow karo ne bindaas connected raho.</p>
-            <a class="cta" href="#home">Aakash ma dhamako karo</a>
+            <h2>ખેડૂત પુત્રનો દેશી જુગાડ</h2>
+            <p>આપડે ગામડાના માણસ, તમે ને હું બધા ભેગા મળીને આકાશ રોશન કરીએ. તમારો ગમતો ફટાકડો ટૅપ કરો
+              ને બિન્દાસ ધમાકો કરો!</p>
+            <p>બનાવનાર: <strong>અવિનાશ ભાલીયા</strong> (<a href="https://www.instagram.com/gaamda_no_engineer/"
+                target="_blank" rel="noopener noreferrer">@gaamda_no_engineer</a>) — તળાજા, ભાવનગરનો સોફ્ટવેર
+              એન્જિનિયર ને ખેડૂત પુત્ર! ઇન્સ્ટાગ્રામ પર ફોલો કરો ને બિન્દાસ કનેક્ટેડ રહો.</p>
+            <a class="cta" href="#home">આકાશમાં ધમાકો કરો</a>
           </div>
           <img class="about-image" src="about-integrated-fireworks.webp"
-            alt="Chakri, Anar, Kothi ne Rocket no desi illustration" loading="lazy">
+            alt="ચકરી, અનાર, કોઠી ને રોકેટનું દેશી ઇલસ્ટ્રેશન" loading="lazy">
         </div>
         <div class="thank-you">
-          <p>Aavva badal aabhar, pachha aavjo</p>
-          <span>Avinash Bhaliya · Talaja, Bhavnagar</span>
+          <p>આવવા બદલ આભાર, પાછા આવજો</p>
+          <span>અવિનાશ ભાલીયા · તળાજા, ભાવનગર</span>
         </div>
       </div>
     </section>
 
     <section id="contact" class="info-page" data-page hidden>
       <div class="info-wrap contact-wrap">
-        <p class="kicker">Aavo vaat karie</p>
-        <h1>Message karo, <em>chai</em> pivdavis.</h1>
-        <p class="intro">Kain pan vaat karvi hoy, navi technology shikhvi hoy ke khali 'Ram Ram' kehvu hoy, seedha
-          Instagram par aavi jaav!</p>
+        <p class="kicker">આવો વાત કરીએ</p>
+        <h1>મેસેજ કરો, <em>ચા</em> પીવડાવીશ.</h1>
+        <p class="intro">કાંઈ પણ વાત કરવી હોય, નવી ટેક્નોલોજી શીખવી હોય કે ખાલી 'રામ રામ' કહેવું હોય, સીધા
+          ઇન્સ્ટાગ્રામ પર આવી જાવ!</p>
         <div class="contact-card">
           <div>
-            <span class="instagram-word">Instagram</span>
+            <span class="instagram-word">ઇન્સ્ટાગ્રામ</span>
             <h2>@gaamda_no_engineer</h2>
-            <p>Avinash Bhaliya · Software Engineer | Khemdut Putra | Talaja, Bhavnagar</p>
+            <p>અવિનાશ ભાલીયા · સોફ્ટવેર એન્જિનિયર | ખેડૂત પુત્ર | તળાજા, ભાવનગર</p>
             <a class="cta" href="https://www.instagram.com/gaamda_no_engineer/" target="_blank"
-              rel="noopener noreferrer">Instagram ma aavi jaav ↗</a>
+              rel="noopener noreferrer">ઇન્સ્ટાગ્રામમાં આવી જાવ ↗</a>
           </div>
           <a class="qr-box" href="https://www.instagram.com/gaamda_no_engineer/" target="_blank"
-            rel="noopener noreferrer" aria-label="Open @gaamda_no_engineer on Instagram">
-            <img src="instagram-qr.png" alt="QR code for instagram.com/gaamda_no_engineer" width="190" height="218">
-            <span>Scan karo ne bhega thav</span>
+            rel="noopener noreferrer" aria-label="ઇન્સ્ટાગ્રામ પર @gaamda_no_engineer ખોલો">
+            <img src="instagram-qr.png" alt="@gaamda_no_engineer માટે QR કોડ" width="190" height="218">
+            <span>સ્કેન કરો ને ભેગા થાવ</span>
           </a>
         </div>
-        <p class="credit">Desi jugaad ne thoda Diwali magic sathe banavelu · @gaamda_no_engineer</p>
+        <p class="credit">દેશી જુગાડ ને થોડા દિવાળી મેજિક સાથે બનાવેલું · @gaamda_no_engineer</p>
       </div>
     </section>
   </div>
-    <audio id="intro-audio" src="intro.mp3" preload="auto" playsinline webkit-playsinline></audio>
+  <audio id="intro-audio" src="intro.mp3" preload="auto" playsinline webkit-playsinline></audio>
   <script src="app.js" defer></script>
 </body>
 

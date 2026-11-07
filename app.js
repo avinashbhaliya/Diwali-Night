@@ -20,15 +20,16 @@ new ResizeObserver(resize).observe(stage);resize();
 let master,noiseBuffer,queue=[],clock=0,audioUntil=0;const sprites=new Map();
 
 const toastMessages={
-  sparkler:["Haath dur rakhjo!","Aa to chhota dhamako che"],
-  fountain:["Dur ubha raho, anar aave che!","Kaka ni dukan jevo sparkle"],
-  spinner:["Chakri ne chakkar aave che","Gol gol Rani"],
-  bomb:["Bhaago re bhaago! Kaan bandh karo!","Padosi ni baari na kaach dhrujya!","Aa to asli gaamda no Sutali Bomb!"],
-  rocket:["3, 2, 1... ISRO ne jaan kari do","Upar jaay che, pachho nahi aave"],
-  firework:["Padosi jaagi gaya!","Aa to full dhamal"],
-  all:["Hve to Diwali puri!","Kaan ma ruu nakho"],
-  soundOn:["Fari dhamako chaalu"],
-  soundOff:["Shanti no maahol"]
+  special:["😂 અરે વાહ! આ તો દેશી સ્પેશિયલ ધમાકો!","સાંભળો સાંભળો, અસલી ગામઠી મોજ!"],
+  sparkler:["હાથ દૂર રાખજો!","આ તો નાનો ધમાકો છે"],
+  fountain:["દૂર ઊભા રહો, અનાર આવે છે!","કાકાની દુકાન જેવો સ્પાર્કલ"],
+  spinner:["ચકરીને ચક્કર આવે છે","ગોળ ગોળ રાણી"],
+  bomb:["ભાગો રે ભાગો! કાન બંધ કરો!","પડોશીની બારીના કાચ ધ્રૂજ્યા!","આ તો અસલી ગામડાનો સુતળી બોમ્બ!"],
+  rocket:["૩, ૨, ૧... ISRO ને જાણ કરી દો","ઉપર જાય છે, પાછો નહીં આવે"],
+  firework:["પડોશી જાગી ગયા!","આ તો ફૂલ ધમાલ"],
+  all:["હવે તો આખી દિવાળી પૂરી!","કાનમાં રૂ નાખો"],
+  soundOn:["ફરી ધમાકો ચાલુ"],
+  soundOff:["શાંતિનો માહોલ"]
 };
 let toastTimer=null;
 function triggerToast(kind){
@@ -112,7 +113,7 @@ unlockAudio().catch(()=>{});
 const audioUnlockEvents = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'click'];
 const audioUnlockOnce = async () => {
   audioUnlockEvents.forEach(e => window.removeEventListener(e, audioUnlockOnce));
-  if (isIntroRunning) playIntroSound();
+  
   await unlockAudio();
 };
 audioUnlockEvents.forEach(e => window.addEventListener(e, audioUnlockOnce, { passive: true }));
@@ -213,6 +214,15 @@ function projectile(kind,offset=0){
 
 function launch(kind){
   stage.classList.add('active');const x=W/2,y=H-55;
+  if(kind==='special'){
+    playIntroSound();
+    projectile('shell',-Math.min(100,W*.15));
+    schedule('rocket',20,Math.min(100,W*.15));
+    schedule('shell',45,0);
+    schedule('bomb',70);
+    stage.classList.add('shake');
+    setTimeout(()=>stage.classList.remove('shake'),500);
+  }
   if(kind==='sparkler'){effects.push({kind,x,y:y-105,t:0,d:190});soundEffect(kind)}
   if(kind==='fountain'){effects.push({kind,x,y,t:0,d:210});soundEffect(kind)}
   if(kind==='spinner'){effects.push({kind,x,y,t:0,d:190});soundEffect(kind)}
@@ -223,13 +233,13 @@ function launch(kind){
 }
 
 document.querySelectorAll('[data-kind]').forEach(b=>b.onclick=async()=>{await unlockAudio();triggerToast(b.dataset.kind);launch(b.dataset.kind)});
-document.querySelector('#all').onclick=async()=>{await unlockAudio();triggerToast('all');queue=[];['sparkler','fountain','spinner','bomb','rocket','firework'].forEach((kind,i)=>schedule(kind,i*145))};
+document.querySelector('#all').onclick=async()=>{await unlockAudio();triggerToast('all');queue=[];['special','sparkler','fountain','spinner','bomb','rocket','firework'].forEach((kind,i)=>schedule(kind,i*145))};
 document.querySelector('#sound').onclick=async e=>{
   const b=e.currentTarget;sound=!sound;
-  b.querySelector('.sound-label').textContent=sound?'Dhamako ON':'Dhamako OFF';
+  b.querySelector('.sound-label').textContent=sound?'ધમાકો ચાલુ':'ધમાકો બંધ';
   b.setAttribute('aria-checked',String(sound));
   triggerToast(sound?'soundOn':'soundOff');
-  if (isIntroRunning) playIntroSound();
+  
   await unlockAudio();
   if(master)master.gain.setTargetAtTime(sound?.8:0,audio.currentTime,.025);
   if(sound){for(const e of effects)if(!e.done)soundEffect(e.kind)}else audioUntil=clock;
@@ -330,12 +340,10 @@ function effect(e,dt){
 /* names */
 const clean=s=>(s||'').replace(/\s+/g,' ').trim().replace(/[^\p{L}\p{M}\p{N} .,'-]/gu,'').slice(0,20).trim();
 let name=clean(new URLSearchParams(location.search).get('from'));
-const lines=()=>[(name||'મારા')+' તરફથી','હેપ્પી દિવાળી','મારા કલેજા'];
-const updateCoverTitle=()=>{const el=$('#cover-name-line');if(el)el.textContent=(name?name+' તરફથી ':'')+'તમારા માટે ખાસ દિવાળી ધમાકો!'};
-updateCoverTitle();
+const lines=()=>[(name||'મારા')+' તરફથી','શુભ દિવાળી','મારા કલેજા'];
 const setGreet=()=>{
   const g1=$('#g1');if(g1)g1.textContent=lines()[0];
-  document.title='Gaamda ni Diwali | Shubh Diwali, Bhai!';
+  document.title='ગામડાની દિવાળી | શુભ દિવાળી, ભાઈ!';
 };
 
 /* particles & rockets from sample */
@@ -422,7 +430,7 @@ function petalFrame(dt){
 function show(){
   unlockAudio().catch(()=>{});
   isIntroRunning = true;
-  playIntroSound();
+  
   syncStage();
   const my=++run,g=$('#greet'),tor=$('#toran'),bar=$('#bar');
   P=[];RK=[];T=null;if(g)g.classList.remove('on');setGreet();
@@ -587,7 +595,7 @@ function navigate(){
     if(tor)tor.classList.add('intro-hidden');
     if(bar)bar.classList.add('intro-hidden');
   }
-  document.title=(nameRoute==='home'?'Gaamda ni Diwali | Shubh Diwali, Bhai!':nameRoute==='about'?'Amara Vishe | Gaamda ni Diwali':'Vaat Kari Lo | Gaamda ni Diwali');
+  document.title=(nameRoute==='home'?'ગામડાની દિવાળી | શુભ દિવાળી, ભાઈ!':nameRoute==='about'?'અમારા વિશે | ગામડાની દિવાળી':'વાત કરી લો | ગામડાની દિવાળી');
 }
 addEventListener('hashchange',navigate);navigate();
 
@@ -610,30 +618,10 @@ stage.addEventListener('click',(e)=>{
   }
 });
 
-let coverDismissed = false;
-function triggerDhamakaFromCover(){
-  if(coverDismissed)return;
-  coverDismissed=true;
-  const cover=document.querySelector("#diwali-cover");
-  if(cover){
-    cover.classList.add("dismissed");
-    setTimeout(()=>{try{cover.remove()}catch(_){}},450);
-  }
-  playIntroSound();
-  unlockAudio().catch(()=>{});
-  show();
-}
-const coverEl=document.querySelector("#diwali-cover");
-if(coverEl){
-  coverEl.addEventListener("click",triggerDhamakaFromCover);
-  coverEl.addEventListener("touchstart",(e)=>{e.preventDefault();triggerDhamakaFromCover();},{passive:false});
-}
 Promise.race([
   Promise.all([
-    document.fonts.load("800 80px Baloo Bhai 2"),
-    document.fonts.load("800 80px Baloo 2")
+    document.fonts.load('800 80px "Baloo Bhai 2"'),
+    document.fonts.load('800 80px "Baloo 2"')
   ]),
-  new Promise(r=>setTimeout(r,1200))
-]).then(()=>{
-  if(!document.querySelector("#diwali-cover"))show();
-});
+  new Promise(r=>setTimeout(r,500))
+]).then(show);

@@ -83,30 +83,6 @@ async function unlockAudio(){
   }
 }
 
-let introAudio = null;
-function playIntroSound() {
-  if (!sound) return;
-  try {
-    if (!introAudio) {
-      introAudio = document.querySelector('#intro-audio') || new Audio('intro.mp3');
-    }
-    if (introAudio) {
-      introAudio.currentTime = 0;
-      introAudio.volume = 1.0;
-      const p = introAudio.play();
-      if (p && p.catch) p.catch(() => {});
-    }
-  } catch (_) {}
-}
-
-function stopIntroSound() {
-  if (introAudio) {
-    try {
-      introAudio.pause();
-      introAudio.currentTime = 0;
-    } catch (_) {}
-  }
-}
 
 // Audio unlock on load & first interaction
 unlockAudio().catch(()=>{});
@@ -215,7 +191,13 @@ function projectile(kind,offset=0){
 function launch(kind){
   stage.classList.add('active');const x=W/2,y=H-55;
   if(kind==='special'){
-    playIntroSound();
+    // 5-6 sec desi firecracker sequence — WebAudio only
+    soundEffect('burst'); soundEffect('rocket');
+    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('bomb'); soundEffect('burst'); },800);
+    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('burst'); soundEffect('shell'); },1800);
+    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('bomb'); },3000);
+    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('burst'); soundEffect('burst'); },4200);
+    setTimeout(()=>{ if(!sound||!audio||audio.state!=='running')return; soundEffect('bomb'); soundEffect('burst'); },5400);
     projectile('shell',-Math.min(100,W*.15));
     schedule('rocket',20,Math.min(100,W*.15));
     schedule('shell',45,0);
@@ -347,26 +329,6 @@ const setGreet=()=>{
 };
 
 
-/* Entry splash: 1-tap unlock audio+show on iOS & Android */
-(function initEntrySplash(){
-  var el=document.querySelector("#entry-from");
-  if(el&&name) el.textContent=name+" તરફથી ખાસ!";
-  var splash=document.querySelector("#diwali-entry");
-  if(!splash) return;
-  var gone=false;
-  function fireIt(){
-    if(gone) return;
-    gone=true;
-    splash.classList.add("exit");
-    setTimeout(function(){try{splash.remove()}catch(x){}},520);
-    unlockAudio().catch(function(){});
-    playIntroSound();
-    show();
-  }
-  splash.addEventListener("click",fireIt);
-  splash.addEventListener("touchstart",function(e){e.preventDefault();fireIt();},{passive:false});
-  splash.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" ")fireIt();});
-})();
 
 /* particles & rockets from sample */
 let P=[],RK=[],T=null,run=0;
@@ -400,7 +362,7 @@ function textBurst(bx,by){
   const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'],oc=document.createElement('canvas');
   oc.width=iW;oc.height=iH;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
   let fs=mob?Math.min(iW/7.2,52):Math.min(iW/9,96);
-  const set=()=>o.font=`800 ${Math.round(fs)}px "Baloo Bhai 2","Baloo 2","Noto Sans Gujarati",system-ui,sans-serif`;set();
+  const set=()=>o.font=`800 ${Math.round(fs)}px "Noto Sans Gujarati","Baloo Bhai 2","Baloo 2",system-ui,sans-serif`;set();
   const targetW=mob?iW*0.92:iW*0.85;
   const mw=Math.max(...L.map(t=>o.measureText(t).width));
   if(mw>targetW){fs*=targetW/mw;set();}
@@ -640,5 +602,12 @@ stage.addEventListener('click',(e)=>{
   }
 });
 
-// Fonts preloaded; show() triggered from splash tap
-Promise.all([document.fonts.load("800 80px Baloo Bhai 2"),document.fonts.load("800 80px Baloo 2")]).catch(function(){});
+// Fonts preloaded; show() on page load directly
+Promise.race([
+  Promise.all([
+    document.fonts.load('800 80px "Baloo Bhai 2"'),
+    document.fonts.load('800 80px "Baloo 2"'),
+    document.fonts.load('900 80px "Noto Sans Gujarati"')
+  ]),
+  new Promise(r=>setTimeout(r,1500))
+]).then(show);

@@ -354,41 +354,62 @@ function sampleRocket(x,ty,h,cb){
 }
 
 function textBurst(bx,by){
-  // Always use live stage dimensions — iOS getBoundingClientRect can lag
+  // Live stage width — never use stale W on iOS
   const liveR=stage.getBoundingClientRect();
   const iW=Math.round(liveR.width||W),iH=Math.round(liveR.height||H);
-  const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'],oc=document.createElement('canvas');
-  oc.width=iW;oc.height=iH;const o=oc.getContext('2d');o.textAlign='center';o.textBaseline='middle';
-  // Gujarati glyphs are wider than Latin — start smaller and scale down aggressively
-  let fs=mob?Math.min(iW/11,32):Math.min(iW/9,88);
-  const set=()=>o.font=`800 ${Math.round(fs)}px "Noto Sans Gujarati","Baloo Bhai 2","Baloo 2",system-ui,sans-serif`;set();
-  // 60% of stage width for Gujarati (glyphs wider than measured due to matras/conjuncts)
-  const targetW=mob?iW*0.60:iW*0.78;
-  // Multiple passes to ensure text fits
-  for(let pass=0;pass<4;pass++){
-    const mw=Math.max(...L.map(t=>o.measureText(t).width));
-    if(mw<=targetW)break;
-    fs*=(targetW/mw)*0.92;set();
+  const L=lines(),cols=['#ffc23d','#fff4de','#ff6aa8'];
+  // Start conservative: Gujarati matras extend beyond measureText bounds on iOS
+  let fs=mob?Math.min(iW/13,26):Math.min(iW/9,88);
+  const oc=document.createElement('canvas');
+  oc.width=iW;oc.height=iH;
+  const o=oc.getContext('2d');
+  o.textAlign='center';o.textBaseline='middle';
+  const setF=()=>{o.font='800 '+Math.round(fs)+'px "Noto Sans Gujarati","Baloo Bhai 2","Baloo 2",sans-serif';};
+  setF();
+  // Max allowed pixel width: 50% of stage on mobile (safe for any Gujarati word)
+  const maxW=mob?iW*0.50:iW*0.78;
+  const cy=iH*0.42,gap=()=>Math.round(fs*1.28);
+  // Pixel-scan loop: draw → measure real pixel extent → scale if too wide
+  for(let attempt=0;attempt<6;attempt++){
+    o.clearRect(0,0,iW,iH);
+    const g=gap();
+    L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*g);});
+    // Find actual rightmost and leftmost non-transparent pixel
+    const pd=o.getImageData(0,0,iW,iH).data;
+    let minX=iW,maxX=0;
+    for(let py=0;py<iH;py+=2){
+      for(let px=0;px<iW;px++){
+        if(pd[(py*iW+px)*4+3]>60){
+          if(px<minX)minX=px;
+          if(px>maxX)maxX=px;
+        }
+      }
+    }
+    const actualW=maxX-minX;
+    if(actualW<=maxW||fs<=12)break;
+    fs*=(maxW/actualW)*0.88;
+    setF();
   }
-  const cy=iH*0.42,gap=Math.round(fs*1.28);
-  L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*gap);});
+  // Final draw with verified font size
+  o.clearRect(0,0,iW,iH);
+  const g=gap();
+  L.forEach((t,i)=>{o.fillStyle=cols[i];o.fillText(t,iW/2,cy+(i-1)*g);});
   const d=o.getImageData(0,0,iW,iH).data;
   let step=mob?3:4,pts;
   for(;;){
     pts=[];
     for(let y=0;y<iH;y+=step){
-      for(let x=0;x<iW;x+=step){
+      for(let x=1;x<iW-1;x+=step){
         const k=(y*iW+x)*4;
-        // Only keep particles that are within safe stage bounds (clip at 98% width)
-        if(d[k+3]>120&&x>=2&&x<iW-2)pts.push([x,y,d[k],d[k+1],d[k+2]]);
+        if(d[k+3]>120)pts.push([x,y,d[k],d[k+1],d[k+2]]);
       }
     }
-    if(pts.length<=(mob?1300:1800)||step>=6)break;
+    if(pts.length<=(mob?1200:1800)||step>=6)break;
     step++;
   }
-  pts.forEach(([x,y,r,g,b])=>{
+  pts.forEach(([x,y,r,g2,b])=>{
     const a=R(0,6.283),s=R(60,260);
-    P.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,tx:x,ty:y,c:`rgb(${r},${g},${b})`,life:99,max:99,g:0,sz:mob?R(1.7,2.5):R(1.3,2.1),m:1,ph:R(0,6.283)});
+    P.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,tx:x,ty:y,c:'rgb('+r+','+g2+','+b+')',life:99,max:99,g:0,sz:mob?R(1.7,2.5):R(1.3,2.1),m:1,ph:R(0,6.283)});
   });
   T=performance.now()/1000;
   syncStage();

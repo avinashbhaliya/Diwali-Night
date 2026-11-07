@@ -346,6 +346,28 @@ const setGreet=()=>{
   document.title='ગામડાની દિવાળી | શુભ દિવાળી, ભાઈ!';
 };
 
+
+/* Entry splash: 1-tap unlock audio+show on iOS & Android */
+(function initEntrySplash(){
+  var el=document.querySelector("#entry-from");
+  if(el&&name) el.textContent=name+" તરફથી ખાસ!";
+  var splash=document.querySelector("#diwali-entry");
+  if(!splash) return;
+  var gone=false;
+  function fireIt(){
+    if(gone) return;
+    gone=true;
+    splash.classList.add("exit");
+    setTimeout(function(){try{splash.remove()}catch(x){}},520);
+    unlockAudio().catch(function(){});
+    playIntroSound();
+    show();
+  }
+  splash.addEventListener("click",fireIt);
+  splash.addEventListener("touchstart",function(e){e.preventDefault();fireIt();},{passive:false});
+  splash.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" ")fireIt();});
+})();
+
 /* particles & rockets from sample */
 let P=[],RK=[],T=null,run=0;
 const hsl=h=>`hsl(${h},100%,62%)`;
@@ -618,10 +640,5 @@ stage.addEventListener('click',(e)=>{
   }
 });
 
-Promise.race([
-  Promise.all([
-    document.fonts.load('800 80px "Baloo Bhai 2"'),
-    document.fonts.load('800 80px "Baloo 2"')
-  ]),
-  new Promise(r=>setTimeout(r,500))
-]).then(show);
+// Fonts preloaded; show() triggered from splash tap
+Promise.all([document.fonts.load("800 80px Baloo Bhai 2"),document.fonts.load("800 80px Baloo 2")]).catch(function(){});
